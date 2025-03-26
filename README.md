@@ -28,16 +28,19 @@ Backend API para la aplicación VeciApp desarrollada con Express.js.
 ## Scripts Disponibles
 
 - `npm run dev`: Inicia el servidor en modo desarrollo con recarga automática
-- `npm start`: Inicia el servidor en modo producción
+- `npm run build`: Compila el código TypeScript a JavaScript
+- `npm start`: Inicia el servidor en modo producción (requiere build previo)
 
 ## Estructura del Proyecto
 
 ```plaintext
 veciapp-backend/
 ├── src/
-│   ├── app.js      # Configuración de Express
-│   └── server.js   # Punto de entrada de la aplicación
+│   ├── app.ts      # Configuración de Express
+│   └── server.ts   # Punto de entrada de la aplicación
+├── dist/           # Código compilado
 ├── .env            # Variables de entorno
+├── tsconfig.json   # Configuración de TypeScript
 ├── .gitignore      # Archivos ignorados por git
 └── package.json    # Dependencias y scripts
 ```
