@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthBO } from '../business/authBO';
+import {responseError, responseOk} from "../utils/standardResponseServer";
 
 export class AuthUseCases {
     private authBO: AuthBO;
@@ -56,17 +57,9 @@ export class AuthUseCases {
 
             const success = await this.authBO.logout(userId);
 
-            res.status(200).json({
-                data: { message: 'Sesión cerrada correctamente' },
-                error: null,
-                status: 'success'
-            });
+            res.status(200).json( responseOk({ message: 'Sesión cerrada correctamente' }));
         } catch (error) {
-            res.status(500).json({
-                data: null,
-                error: { message: 'Error en el servidor', details: error.message },
-                status: 'error'
-            });
+            res.status(500).json( responseError({ message: 'Error en el servidor', details: error.message }));
         }
     }
 
@@ -79,7 +72,8 @@ export class AuthUseCases {
                     data: null,
                     error: { message: 'Todos los campos son requeridos' },
                     status: 'error'
-                });                return;
+                });
+                return;
             }
 
             const result = await this.authBO.register({ name, email, password });
@@ -95,14 +89,16 @@ export class AuthUseCases {
                     data: null,
                     error: { message: error.message },
                     status: 'error'
-                });                return;
+                });
+                return;
             }
 
             res.status(500).json({
                 data: null,
                 error: { message: 'Error en el servidor', details: error.message },
                 status: 'error'
-            });        }
+            });
+        }
     }
 
     reset = async (req: Request, res: Response): Promise<void> => {

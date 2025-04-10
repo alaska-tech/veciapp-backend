@@ -1,9 +1,11 @@
-import { UserRepository } from '../repositories/user.repository'
-import { UserEntity } from '../models/user.entity'
+import { UserRepository } from '../repositories/user.repository';
+import { CustomerRepository } from '../repositories/customer.repository';
+import { VendorRepository } from '../repositories/vendor.repository';
+import { UserEntity, AccountType } from '../models/user.entity'
 import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import { randomBytes } from 'crypto'
-import {SALT, SECRET} from "../utils/constants";
+import {SALT, SECRET, TOKEN_EXPIRATION} from "../utils/constants";
 
 //TODO: pasar estas interfaces a /types
 interface LoginCredentials {
@@ -11,10 +13,24 @@ interface LoginCredentials {
     password: string
 }
 
-interface RegisterData {
-    name: string
-    email: string
-    password: string
+interface RegisterUserData {
+    name: string;
+    email: string;
+    password: string;
+    role: AccountType;
+}
+
+interface RegisterCustomerData extends RegisterUserData {
+    company?: string;
+    phone?: string;
+    address?: string;
+}
+
+interface RegisterVendorData extends RegisterUserData {
+    businessName: string;
+    phone?: string;
+    address?: string;
+    taxId?: string;
 }
 
 interface ResetPasswordData {
@@ -29,7 +45,7 @@ interface NewPasswordData {
 interface TokenPayload {
     userId: string
     email: string
-    role: string
+    role: AccountType
 }
 
 export class AuthBO {
@@ -40,7 +56,7 @@ export class AuthBO {
     constructor() {
         this.userRepository = new UserRepository();
         this.jwtSecret = SECRET || '1234'
-        this.tokenExpiration = process.env.TOKEN_EXPIRATION || '24h'
+        this.tokenExpiration = TOKEN_EXPIRATION || '7d'
     }
 
     async login(credentials: LoginCredentials): Promise<{ user: Partial<UserEntity>, token: string } | null> {

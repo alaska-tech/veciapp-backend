@@ -5,10 +5,10 @@ import verifyToken from "../middlewares/validateToken";
 const router = express.Router()
 const authUseCases = new AuthUseCases()
 
-router.postAsync('/login', verifyToken, authUseCases.login)
-router.postAsync('/login', verifyToken, authUseCases.logout)
-router.postAsync('/register', verifyToken, authUseCases.register)
-router.postAsync('/reset-password', verifyToken, authUseCases.reset)
+router.postAsync('/login', authUseCases.login)
+router.postAsync('/logout', verifyToken, authUseCases.logout)
+router.postAsync('/register', authUseCases.register)
+router.postAsync('/reset-password', authUseCases.reset)
 router.postAsync('/session', verifyToken, authUseCases.session)
 
 export default router

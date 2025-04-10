@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 
-//import { Customer } from "./Customer"
-//import { Vendor } from "./Vendor"
+import { CustomerEntity } from './customer.entity';
+import { VendorEntity } from './vendor.entity';
 
 export enum AccountType {
     CUSTOMER = "customer",
@@ -9,13 +9,13 @@ export enum AccountType {
     ADMIN = "admin"
 }
 
-@Entity('account')
+@Entity('users')
 export class UserEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ length: 100 })
-    name: string;
+    @Column({ type: 'varchar', length: 100 })
+    fullname: string;
 
     @Column({
         type: "varchar",
@@ -47,14 +47,14 @@ export class UserEntity {
     })
     isActive: boolean;
 
-    @Column({ nullable: true })
-    refreshToken: string;
+    @Column({ type: 'varchar', nullable: true })
+    refreshToken: string | null;
 
-    @Column({ nullable: true })
-    passwordResetToken: string;
+    @Column({ type: 'varchar', nullable: true })
+    passwordResetToken: string | null;
 
-    @Column({ nullable: true })
-    passwordResetExpires: Date;
+    @Column({ type: 'varchar', nullable: true })
+    passwordResetExpires: Date | null;
 
     @Column({
         type: "boolean",
@@ -68,13 +68,10 @@ export class UserEntity {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    //TODO: Organizar las relaciones
-    /*
     // Relaciones
-    @OneToOne(() => Customer, customer => customer.account, { nullable: true })
-    customer?: Customer;
+    @OneToOne(() => CustomerEntity, customer => customer.user)
+    customer: CustomerEntity;
 
-    @OneToOne(() => Vendor, vendor => vendor.account, { nullable: true })
-    vendor?: Vendor;
-    */
+    @OneToOne(() => VendorEntity, vendor => vendor.user)
+    vendor: VendorEntity;
 }

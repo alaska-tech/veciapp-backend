@@ -18,7 +18,6 @@ export class UserBO {
         if (!isValidEmail(userData.email)) {
             throw new Error('Email inválido');
         }
-
         // implementar reglas de negocio adicionales
         const hashedPassword = await this.hashPassword(userData.password);
 
@@ -32,6 +31,13 @@ export class UserBO {
 
     async getUserById(id: string): Promise<UserEntity | null> {
         return this.repository.findOneBy({ id });
+    }
+
+    async getAllUsers(limit: number, page: number): Promise<[UserEntity[] | null, number]> {
+        return this.repository.findAndCount({
+            take: limit,
+            skip: page
+        });
     }
 
     async updateUser(id: string, userData: Partial<UserEntity>): Promise<UserEntity | null> {

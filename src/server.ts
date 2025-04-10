@@ -1,13 +1,12 @@
 import app from './app';
 import { initializeDatabase } from './config/database';
-
-const PORT = process.env.PORT || 3000;
+import {PORT} from './utils/constants'
 
 // Inicializar base de datos
 initializeDatabase()
     .then(() => {
       // Iniciar servidor
-      app.listen(PORT, () => {
+      app.listen(PORT || 3000, () => {
         console.log(`Servidor veciapp corriendo en puerto ${PORT}`);
       });
     })
