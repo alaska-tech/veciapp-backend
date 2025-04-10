@@ -29,6 +29,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
 
         // Añadir el usuario decodificado al request
         req.user = decoded;
+        //req.isAuthenticated = true
 
         next();
     } catch (error) {

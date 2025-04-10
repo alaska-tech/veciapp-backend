@@ -1,10 +1,9 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors'
-import dotenv from 'dotenv'
 import router from "./routes"
 import  {error404Handler, errorHandler} from "./middlewares/errors"
 
-dotenv.config()
+
 
 const app: Express = express()
 

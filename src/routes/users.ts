@@ -5,7 +5,8 @@ import verifyToken from '../middlewares/validateToken'
 const router = express.Router()
 const userUseCases = new UserUseCases()
 
-router.post('/', verifyToken, userUseCases.createUser);
+router.post('/', userUseCases.createUser);
+router.get('/', verifyToken, userUseCases.getAllUsers);
 router.get('/:id', verifyToken, userUseCases.getUserById);
 router.put('/:id', verifyToken, userUseCases.updateUser);
 router.delete('/:id', verifyToken, userUseCases.deleteUser);
