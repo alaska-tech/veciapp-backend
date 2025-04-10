@@ -14,8 +14,8 @@ export class CustomerEntity {
     @Column({ type: 'varchar', length: 100 })
     fullname: string;
 
-    @Column({ type: 'varchar', length: 20 })
-    identification: string;
+    @Column({ type: 'varchar', length: 20, nullable: true })
+    identification: string | null;
 
     @Column({ type: 'varchar', length: 10, nullable: true })
     cellphone: string | null;
@@ -44,8 +44,11 @@ export class CustomerEntity {
     @Column({ type: 'boolean', default: false })
     isActive: boolean;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column({ type: 'varchar', nullable: true, default: "created" })
     state: string | null;
+
+    @Column({ type: 'varchar', nullable: true, default: null })
+    codeOtpAuthorization: string | null;
 
     @Column({ type: 'boolean', default: false })
     isEmailVerified: boolean;
