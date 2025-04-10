@@ -94,7 +94,7 @@ export class VendorBO {
     }
 
     async deleteVendor(id: string): Promise<boolean> {
-        const result = await this.repository.delete(id);
+        const result = await this.repository.softDelete(id);
         return result.affected ? result.affected > 0 : false;
     }
 

@@ -97,21 +97,21 @@
 
     <div class="line"></div>
 
-    <h1>Verificación de correo electrónico</h1>
+    <h1>{{title}}</h1>
     <br/>
-    <p style="text-align: left">Hola <span>$(Nombre_usuario)</span>,</p>
+    <p style="text-align: left">Hola <span>{{fullname}}</span>,</p>
     <br/>
     <p style="text-align: left">¡Ya casi terminas de crear tu cuenta en VeciApp!</p>
     <br/>
     <p><strong>Copia el siguiente código y pégalo en la app para verificar tu correo y activar tu cuenta:</strong></p>
-
+{{otpdigit1}}
     <div class="code-container">
-      <div class="code-box">2</div>
-      <div class="code-box">8</div>
-      <div class="code-box">1</div>
-      <div class="code-box">8</div>
-      <div class="code-box">7</div>
-      <div class="code-box">5</div>
+      <div class="code-box">{{numero}}</div>
+      <div class="code-box">{{otpdigit2}}</div>
+      <div class="code-box">{{otpdigit3}}</div>
+      <div class="code-box">{{otpdigit4}}</div>
+      <div class="code-box">{{otpdigit5}}</div>
+      <div class="code-box">{{otpdigit6}}</div>
     </div>
 
     <p style="text-align: left">Este código es personal, válido solo una vez; Si no hiciste este registro, ignora este mensaje.<br>
