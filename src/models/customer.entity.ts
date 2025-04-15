@@ -3,8 +3,9 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    UpdateDateColumn,
+    UpdateDateColumn, OneToOne, JoinColumn,
 } from 'typeorm';
+import {UserEntity} from "./user.entity";
 
 export enum Gender {
     MALE = 'male',
@@ -106,6 +107,10 @@ export class Customer {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToOne(() => UserEntity, user => user.customer)
+    @JoinColumn()
+    user: UserEntity
 }
 
 // import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
