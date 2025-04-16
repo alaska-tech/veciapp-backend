@@ -20,7 +20,7 @@ export enum vendorState {
 }
 
 @Entity('vendors')
-export class vendor {
+export class Vendor {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -101,9 +101,9 @@ export class vendor {
     updatedAt: Date;
 
     // Relación con User
-    @OneToOne(() => UserEntity, user => user.vendor)
+/*    @OneToOne(() => UserEntity, user => user.vendor)
     @JoinColumn()
-    user: UserEntity;
+    user: UserEntity;*/
 }
 
 

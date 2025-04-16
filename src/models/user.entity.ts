@@ -69,9 +69,9 @@ export class UserEntity {
     updatedAt: Date;
 
     // Relaciones
-    @OneToOne(() => Customer, customer => customer.user)
+/*    @OneToOne(() => Customer, customer => customer.user)
     customer: Customer;
 
     @OneToOne(() => vendor, vendor => vendor.user)
-    vendor: vendor;
+    vendor: vendor;*/
 }

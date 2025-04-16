@@ -108,9 +108,9 @@ export class Customer {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToOne(() => UserEntity, user => user.customer)
+/*    @OneToOne(() => UserEntity, user => user.customer)
     @JoinColumn()
-    user: UserEntity
+    user: UserEntity*/
 }
 
 // import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
