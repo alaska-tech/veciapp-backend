@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verificación de correo electrónico - VeciApp</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #000;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .logo {
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      height: 80px;
+    }
+
+    .line {
+      height: 4px;
+      background-color: #fcd703;
+      margin: 20px 0;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    p span {
+      font-weight: bold;
+    }
+
+    .code-container {
+      margin: 30px 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .code-box {
+      font-size: 56px;
+      font-weight: bold;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px 3px;
+      width: 50px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .footer {
+      font-size: 12px;
+      color: #666;
+      margin-top: 40px;
+      line-height: 1.5;
+    }
+
+    .footer strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .footer-line {
+      height: 4px;
+      background-color: #fcd703;
+      margin: 40px 0 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://images2.imgbox.com/f2/c7/4gNo6ZMq_o.png" alt="VeciApp Logo">
+    </div>
+
+    <div class="line"></div>
+
+    <h1>{{title}}</h1>
+    <br/>
+    <p style="text-align: left">Hola <span>{{fullname}}</span>,</p>
+    <br/>
+    <p style="text-align: left">¡Ya casi terminas de crear tu cuenta en VeciApp!</p>
+    <br/>
+    <p><strong>Copia el siguiente código y pégalo en la app para verificar tu correo y activar tu cuenta:</strong></p>
+{{otpdigit1}}
+    <div class="code-container">
+      <div class="code-box">{{numero}}</div>
+      <div class="code-box">{{otpdigit2}}</div>
+      <div class="code-box">{{otpdigit3}}</div>
+      <div class="code-box">{{otpdigit4}}</div>
+      <div class="code-box">{{otpdigit5}}</div>
+      <div class="code-box">{{otpdigit6}}</div>
+    </div>
+
+    <p style="text-align: left">Este código es personal, válido solo una vez; Si no hiciste este registro, ignora este mensaje.<br>
+    Al usarlo, aceptas los términos de VeciApp.</p>
+    <br/>
+    <p>¡Gracias por unirte!</p>
+
+    <div class="footer-line"></div>
+
+    <div class="footer">
+      <strong>VeciApp</strong>
+      <strong>Carrera 45 #26-15, Santa Marta, Magdalena, Colombia</strong><br>
+      © 2025 VeciApp. Todos los derechos reservados.<br>
+      Este correo fue enviado automáticamente, por favor no respondas a este mensaje.
+    </div>
+  </div>
+</body>
+</html>
