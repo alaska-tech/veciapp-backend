@@ -65,6 +65,38 @@ http://localhost:3000
 - `GET /`: Endpoint de bienvenida
   - Respuesta: `{ "message": "Welcome to the API" }`
 
+```plaintext
+#{{API_URL}}/api/v1/account/stats
+{
+"data": {
+"total_accounts": 289,
+"active_accounts": 280,
+"inactive_accounts": 9,
+"type_accounts": {
+"admin": 4,
+"vendor": 200,
+"customer": 100
+}
+},
+"error": null,
+"status": "Error"
+}
+```
+
+```plaintext
+#{{API_URL}}/api/v1/account/toggle-active
+{
+    "data": {
+        "activate": false,
+        "message": "Cuenta desactivada con éxito!."
+    },
+    "error": null,
+    "status": "Success"
+}
+
+```
+
+
 ## Contribución
 
 1. Crea un fork del repositorio

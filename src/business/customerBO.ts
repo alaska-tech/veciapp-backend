@@ -58,7 +58,9 @@ export class CustomerBO {
                 fullname: response.fullname
             }
             const hash = encrypt(JSON.stringify(objectToHash))
-            console.log('el hash para validar', hash, otpSplit[0])
+
+            console.log('el hash para validar', hash)
+            console.log("otp split:", otpSplit)
 
             //enviar correo de bienvenida, para confirmar otp
             mailer({
@@ -74,7 +76,7 @@ export class CustomerBO {
                 otpdigit5: otpSplit[4],
                 otpdigit6: otpSplit[5],
                 template: 'otp'
-            })
+            });
 
             Object.assign(response, {hash: hash});
         }
