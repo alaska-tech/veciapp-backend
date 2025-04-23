@@ -1,4 +1,4 @@
-import { VendorEntity } from '../models/vendor.entity';
+import { Vendor } from '../models/vendor.entity';
 import { Repository } from 'typeorm';
 import { VendorRepository } from '../repositories/vendor.repository';
 import { AppDataSource } from '../config/database';
@@ -9,22 +9,22 @@ import mailer from '../services/mailer'
 import {encrypt, decrypt} from "../utils/encrypt";
 
 export class VendorBO {
-    private repository: Repository<VendorEntity>;
+    private repository: Repository<Vendor>;
     private vendorRepository: VendorRepository
 
     constructor() {
-        this.repository = AppDataSource.getRepository(VendorEntity);
+        this.repository = AppDataSource.getRepository(Vendor);
         this.vendorRepository = new VendorRepository();
     }
 
     // Métodos de negocio
-    async createVendor(vendorData: Omit<VendorEntity, 'id' | 'createdAt' | 'updatedAt'>): Promise<VendorEntity> {
+    async createVendor(vendorData: Omit<Vendor, 'id' | 'createdAt' | 'updatedAt'>): Promise<Vendor> {
         // implementar validaciones de negocio
         if (!isValidEmail(vendorData.email)) {
             throw new Error('Email inválido');
         }
 
-        if (!vendorData.fullname) {
+        if (!vendorData.fullName) {
             throw new Error('El nombre del vendedor es requerido');
         }
 
@@ -44,7 +44,7 @@ export class VendorBO {
                 email: response.email,
                 role: 'vendor',
                 id: response.id,
-                fullname: response.fullname
+                fullname: response.fullName
             }
             const hash = encrypt(JSON.stringify(objectToHash))
             console.log('el hash para validar', hash)
@@ -52,7 +52,7 @@ export class VendorBO {
             //enviar correo de bienvenida, para confirmar y crear contrasena
             mailer({
                 email: response.email,
-                fullname: response.fullname,
+                fullname: response.fullName,
                 state: response.state,
                 title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
                 message: 'Ahora asigna una clave para tu cuenta de vendedor',
@@ -64,18 +64,18 @@ export class VendorBO {
         return response;
     }
 
-    async getVendorById(id: string): Promise<VendorEntity | null> {
+    async getVendorById(id: string): Promise<Vendor | null> {
         return this.repository.findOneBy({ id });
     }
 
-    async getAllVendors(limit: number, page: number): Promise<[VendorEntity[] | null, number]> {
+    async getAllVendors(limit: number, page: number): Promise<[Vendor[] | null, number]> {
         return this.repository.findAndCount({
             take: limit,
             skip: page
         });
     }
 
-    async updateVendor(id: string, vendorData: Partial<VendorEntity>): Promise<VendorEntity | null> {
+    async updateVendor(id: string, vendorData: Partial<Vendor>): Promise<Vendor | null> {
         const vendor = await this.getVendorById(id);
         if (!vendor) return null;
 
@@ -94,7 +94,7 @@ export class VendorBO {
     }
 
     async deleteVendor(id: string): Promise<boolean> {
-        const result = await this.repository.softDelete(id);
+        const result = await this.repository.delete(id);
         return result.affected ? result.affected > 0 : false;
     }
 

@@ -11,8 +11,18 @@ import {
 } from '../utils/constants'
 
 import { UserEntity} from "../models/user.entity";
-import { CustomerEntity} from "../models/customer.entity";
-import { VendorEntity} from "../models/vendor.entity";
+import { Customer} from "../models/customer.entity";
+import { Vendor} from "../models/vendor.entity";
+import { Branch} from "../models/branch.entity";
+import { Account} from "../models/account.entity";
+import { Category} from "../models/category.entity";
+import { Order} from "../models/order.entity";
+import { Parameter} from "../models/parameter.entity";
+import { Payment} from "../models/payment.entity";
+import { ProductService} from "../models/productservice.entity";
+import { ShoppingCart} from "../models/shoppingcart.entity";
+import { Testimonial} from "../models/testimonial.entity";
+import { Wishlist} from "../models/wishlist.entity";
 
 const isProduction = NODE_ENV === 'production';
 const baseConfig: DataSourceOptions = {
@@ -25,7 +35,7 @@ const baseConfig: DataSourceOptions = {
 
     // Configuración de modelos
     entities: [
-        UserEntity, CustomerEntity, VendorEntity
+        UserEntity, Customer, Vendor, Branch, Account, Category, Order, Parameter, Payment, ProductService, ShoppingCart, Testimonial, Wishlist
     ],
 
     // Ubicación de migraciones (cuando las tengamos)

@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 
-import { CustomerEntity } from './customer.entity';
-import { VendorEntity } from './vendor.entity';
+import { Customer } from './customer.entity';
+import { vendor } from './vendor.entity';
 
 export enum AccountType {
     CUSTOMER = "customer",
@@ -69,9 +69,9 @@ export class UserEntity {
     updatedAt: Date;
 
     // Relaciones
-    @OneToOne(() => CustomerEntity, customer => customer.user)
-    customer: CustomerEntity;
+/*    @OneToOne(() => Customer, customer => customer.user)
+    customer: Customer;
 
-    @OneToOne(() => VendorEntity, vendor => vendor.user)
-    vendor: VendorEntity;
+    @OneToOne(() => vendor, vendor => vendor.user)
+    vendor: vendor;*/
 }
