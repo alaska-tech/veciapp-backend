@@ -26,6 +26,15 @@ export class Parameter {
   @Column({ type: 'enum', enum: ['string', 'number', 'boolean', 'json'] })
   type: 'string' | 'number' | 'boolean' | 'json'; // Tipo de dato del parámetro
 
+  @Column({ default: true })
+  isActive: boolean; // Estado del parámetro (activo/inactivo)
+
+  @Column({ type: 'text', nullable: true })
+  createdBy: string; // Usuario que creó el parámetro
+
+  @Column({ type: 'text', nullable: true })
+  updatedBy: string; // Usuario que actualizó el parámetro
+
   @CreateDateColumn()
   createdAt: Date;
 
