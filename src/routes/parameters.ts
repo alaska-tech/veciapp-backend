@@ -9,6 +9,7 @@ router.post('/', parameterUseCases.createParameter);
 router.get('/list', parameterUseCases.getAllParameters);
 router.get('/:id', parameterUseCases.getParameterById);
 router.get('/get-by-name/:name', parameterUseCases.getParameterByName);
+router.put('/toggle-status/:id', parameterUseCases.toggleParameterStatus);
 router.put('/:id', parameterUseCases.updateParameter);
 router.delete('/:id', parameterUseCases.deleteParameter);
 

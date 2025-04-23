@@ -4,6 +4,34 @@ import {ParameterBO} from "../business/parameterBO";
 export class ParameterUseCases {
   private parameterBO: ParameterBO = new ParameterBO();
 
+  toggleParameterStatus = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const parameter = await this.parameterBO.toggleParameterStatus(
+        req.params.id,
+        req.body.userRole
+      );
+      if (parameter) {
+        res.status(200).json({
+          data: parameter,
+          error: null,
+          status: "success",
+        });
+      } else {
+        res.status(404).json({
+          data: null,
+          error: { message: "Parámetro no encontrado" },
+          status: "error",
+        });
+      }
+    } catch (error) {
+      res.status(400).json({
+        data: null,
+        error: { message: error.message },
+        status: "error",
+      });
+    }
+  }
+
   createParameter = async (req: Request, res: Response): Promise<void> => {
     try {
       const parameter = await this.parameterBO.createParameter(req.body);
