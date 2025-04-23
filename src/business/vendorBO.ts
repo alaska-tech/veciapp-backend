@@ -68,11 +68,12 @@ export class VendorBO {
         return this.repository.findOneBy({ id });
     }
 
-    async getAllVendors(limit: number, page: number): Promise<[VendorEntity[] | null, number]> {
-        return this.repository.findAndCount({
-            take: limit,
-            skip: page
-        });
+    async getAllVendors(limit: string | null, page: string | null): Promise<[VendorEntity[] | null, number]> {
+
+        return (limit && page) ? this.repository.findAndCount({
+            take: parseInt(limit),
+            skip: parseInt(page)
+        }) : this.repository.findAndCount();
     }
 
     async updateVendor(id: string, vendorData: Partial<VendorEntity>): Promise<VendorEntity | null> {

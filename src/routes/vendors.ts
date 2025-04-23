@@ -6,8 +6,8 @@ const router = express.Router()
 const vendorUseCases = new VendorUseCases()
 
 router.post('/', vendorUseCases.createVendor);
-router.get('/', verifyToken, vendorUseCases.getAllVendors);
-router.get('/:id', verifyToken, vendorUseCases.getVendorById);
+router.get('/list', verifyToken, vendorUseCases.getAllVendors);
+router.get('/get-details/:id', verifyToken, vendorUseCases.getVendorById);
 router.put('/:id', verifyToken, vendorUseCases.updateVendor);
 router.delete('/:id', vendorUseCases.deleteVendor);
 router.get('/validate-email/:hash', vendorUseCases.validateEmail);
