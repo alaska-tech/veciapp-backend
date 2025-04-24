@@ -1,4 +1,4 @@
-import { VendorEntity } from '../models/vendor.entity';
+import { Vendor } from '../models/vendor.entity';
 import { Repository } from 'typeorm';
 import { VendorRepository } from '../repositories/vendor.repository';
 import { AppDataSource } from '../config/database';
@@ -9,16 +9,17 @@ import mailer from '../services/mailer'
 import {encrypt, decrypt} from "../utils/encrypt";
 
 export class VendorBO {
-    private repository: Repository<VendorEntity>;
+    private repository: Repository<Vendor>;
     private vendorRepository: VendorRepository
 
     constructor() {
-        this.repository = AppDataSource.getRepository(VendorEntity);
+        this.repository = AppDataSource.getRepository(Vendor);
         this.vendorRepository = new VendorRepository();
     }
 
     // Métodos de negocio
-    async createVendor(vendorData: Omit<VendorEntity, 'id' | 'createdAt' | 'updatedAt'>): Promise<VendorEntity> {
+
+    async createVendor(vendorData: Omit<Vendor, 'id' | 'createdAt' | 'updatedAt'>): Promise<Vendor> {
 
         // implementar validaciones de negocio
         if (!vendorData.internalCode) {
@@ -62,7 +63,7 @@ export class VendorBO {
             //enviar correo de bienvenida, para confirmar y crear contrasena
             mailer({
                 email: response.email,
-                fullname: response.fullname,
+                fullname: response.fullName,
                 state: response.state,
                 title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
                 message: 'Ahora presiona el botón para continnuar con el proceso de crear tu cuenta de Veci-proveedor',
@@ -74,19 +75,18 @@ export class VendorBO {
         return response;
     }
 
-    async getVendorById(id: string): Promise<VendorEntity | null> {
+    async getVendorById(id: string): Promise<Vendor | null> {
         return this.repository.findOneBy({ id });
     }
 
-    async getAllVendors(limit: string | null, page: string | null): Promise<[VendorEntity[] | null, number]> {
-
+    async getAllVendors(limit: number, page: number): Promise<[Vendor[] | null, number]> {
         return (limit && page) ? this.repository.findAndCount({
             take: parseInt(limit),
             skip: parseInt(page)
         }) : this.repository.findAndCount();
     }
 
-    async updateVendor(id: string, vendorData: Partial<VendorEntity>): Promise<VendorEntity | null> {
+    async updateVendor(id: string, vendorData: Partial<Vendor>): Promise<Vendor | null> {
         const vendor = await this.getVendorById(id);
         if (!vendor) return null;
 
