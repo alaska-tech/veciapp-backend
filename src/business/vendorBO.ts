@@ -18,14 +18,24 @@ export class VendorBO {
     }
 
     // Métodos de negocio
+
     async createVendor(vendorData: Omit<Vendor, 'id' | 'createdAt' | 'updatedAt'>): Promise<Vendor> {
+
         // implementar validaciones de negocio
-        if (!isValidEmail(vendorData.email)) {
-            throw new Error('Email inválido');
+        if (!vendorData.internalCode) {
+            throw new Error('El código interno del Veci-proveedor es requerido.');
         }
 
-        if (!vendorData.fullName) {
-            throw new Error('El nombre del vendedor es requerido');
+        if (!vendorData.email) {
+            throw new Error('El Email del Veci-proveedor es requerido.');
+        }
+
+        if (!isValidEmail(vendorData.email)) {
+            throw new Error('Email ingresado es inválido.');
+        }
+
+        if (!vendorData.fullname) {
+            throw new Error('El nombre del Veci-proveedor es requerido');
         }
 
         // implementar reglas de negocio adicionales
@@ -44,7 +54,8 @@ export class VendorBO {
                 email: response.email,
                 role: 'vendor',
                 id: response.id,
-                fullname: response.fullName
+                code: response.internalCode,
+                fullname: response.fullname
             }
             const hash = encrypt(JSON.stringify(objectToHash))
             console.log('el hash para validar', hash)
@@ -55,7 +66,7 @@ export class VendorBO {
                 fullname: response.fullName,
                 state: response.state,
                 title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
-                message: 'Ahora asigna una clave para tu cuenta de vendedor',
+                message: 'Ahora presiona el botón para continnuar con el proceso de crear tu cuenta de Veci-proveedor',
                 anchor: 'http://localhost:3001/api/v1/vendors/validate-email/'+hash,
                 template: 'confirm-email'
             })
@@ -69,10 +80,10 @@ export class VendorBO {
     }
 
     async getAllVendors(limit: number, page: number): Promise<[Vendor[] | null, number]> {
-        return this.repository.findAndCount({
-            take: limit,
-            skip: page
-        });
+        return (limit && page) ? this.repository.findAndCount({
+            take: parseInt(limit),
+            skip: parseInt(page)
+        }) : this.repository.findAndCount();
     }
 
     async updateVendor(id: string, vendorData: Partial<Vendor>): Promise<Vendor | null> {
