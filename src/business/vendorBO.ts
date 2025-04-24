@@ -19,13 +19,22 @@ export class VendorBO {
 
     // Métodos de negocio
     async createVendor(vendorData: Omit<VendorEntity, 'id' | 'createdAt' | 'updatedAt'>): Promise<VendorEntity> {
+
         // implementar validaciones de negocio
+        if (!vendorData.internalCode) {
+            throw new Error('El código interno del Veci-proveedor es requerido.');
+        }
+
+        if (!vendorData.email) {
+            throw new Error('El Email del Veci-proveedor es requerido.');
+        }
+
         if (!isValidEmail(vendorData.email)) {
-            throw new Error('Email inválido');
+            throw new Error('Email ingresado es inválido.');
         }
 
         if (!vendorData.fullname) {
-            throw new Error('El nombre del vendedor es requerido');
+            throw new Error('El nombre del Veci-proveedor es requerido');
         }
 
         // implementar reglas de negocio adicionales
@@ -44,6 +53,7 @@ export class VendorBO {
                 email: response.email,
                 role: 'vendor',
                 id: response.id,
+                code: response.internalCode,
                 fullname: response.fullname
             }
             const hash = encrypt(JSON.stringify(objectToHash))
@@ -55,7 +65,7 @@ export class VendorBO {
                 fullname: response.fullname,
                 state: response.state,
                 title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
-                message: 'Ahora asigna una clave para tu cuenta de vendedor',
+                message: 'Ahora presiona el botón para continnuar con el proceso de crear tu cuenta de Veci-proveedor',
                 anchor: 'http://localhost:3001/api/v1/vendors/validate-email/'+hash,
                 template: 'confirm-email'
             })
