@@ -1,4 +1,4 @@
-import { UserRepository } from '../repositories/user.repository';
+import { AccountRepository } from '../repositories/account.repository';
 import { CustomerRepository } from '../repositories/customer.repository';
 import { VendorRepository } from '../repositories/vendor.repository';
 import { UserEntity, AccountType } from '../models/user.entity'
@@ -49,12 +49,12 @@ interface TokenPayload {
 }
 
 export class AuthBO {
-    private userRepository: UserRepository
+    private userRepository: AccountRepository
     private jwtSecret: string
     private tokenExpiration: string
 
     constructor() {
-        this.userRepository = new UserRepository();
+        this.userRepository = new AccountRepository();
         this.jwtSecret = SECRET || '1234'
         this.tokenExpiration = TOKEN_EXPIRATION || '7d'
     }

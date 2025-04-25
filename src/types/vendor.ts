@@ -10,7 +10,7 @@ export interface BankAccount {
 
 export interface VendorCreateRequest {
     internalCode: string;
-    fullname: string;
+    fullName: string;
     email: string;
     cellphone?: string;
     identification?: string;
@@ -39,9 +39,10 @@ export interface VendorUpdateRequestExtended extends Request {
     };
 }
 
-export interface VendorGetRequestExtended extends Request {
+export interface VendorStatsRequestExtended extends Request {
     params: {
-        id: string;
+        start: string,
+        end: string
     };
 }
 
@@ -101,4 +102,10 @@ export interface VendorPaginatedResponse {
     page: number;
     limit: number;
     totalPages: number;
+}
+
+export interface VendorStats {
+    total_vendors: number;
+    active_vendors: number;
+    inactive_vendors: number;
 }

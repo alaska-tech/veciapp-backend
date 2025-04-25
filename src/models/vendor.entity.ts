@@ -8,9 +8,9 @@ import {
 import { UserEntity } from './user.entity';
 
 export enum Gender {
-    MALE = 'male',
-    FEMALE = 'female',
-    OTHER = 'other',
+    MALE = 'M',
+    FEMALE = 'F',
+    OTHER = 'O',
 }
 
 export enum vendorState {
@@ -24,7 +24,7 @@ export class Vendor {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ type: 'varchar', length: 100, unique: true })
     internalCode: string;
 
     @Column({ type: 'varchar', length: 255 })
@@ -35,9 +35,6 @@ export class Vendor {
 
     @Column({ type: 'varchar', length: 150, unique: true })
     email: string;
-
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    password: string;
 
     @Column({ default: false })
     isEmailVerified: boolean;

@@ -8,8 +8,10 @@ const vendorUseCases = new VendorUseCases()
 router.post('/', vendorUseCases.createVendor);
 router.get('/list', verifyToken, vendorUseCases.getAllVendors);
 router.get('/get-details/:id', verifyToken, vendorUseCases.getVendorById);
-router.put('/:id', verifyToken, vendorUseCases.updateVendor);
-router.delete('/:id', vendorUseCases.deleteVendor);
+router.get('/stats', vendorUseCases.getStats);
+router.put('/edit/:id', verifyToken, vendorUseCases.updateVendor);
+//router.put('/manage-status/:id', verifyToken, vendorUseCases.manageStatus);
 router.get('/validate-email/:hash', vendorUseCases.validateEmail);
+router.delete('/:id', vendorUseCases.deleteVendor);
 
 export default router
