@@ -8,163 +8,113 @@ export class AuthUseCases {
     constructor() {
         this.authBO = new AuthBO();
     }
-//TODO: las respuestas y los request(req.body) deberian pasarse por la interface que ya tengo definida en /types
 
     login = async (req: Request, res: Response): Promise<void> => {
         try {
             const { email, password } = req.body;
 
             if (!email || !password) {
-                res.status(400).json({
-                    data: null,
-                    error: { message: 'Email y contraseña son requeridos' },
-                    status: 'error'
-                });                return;
+                res.status(400).json(responseError({ message: 'Email y contraseña son requeridos' }));
+                return;
             }
 
             const result = await this.authBO.login({ email, password });
 
             if (!result) {
-                res.status(401).json({
-                    data: null,
-                    error: { message: 'Credenciales inválidas' },
-                    status: 'error'
-                });                return;
+                res.status(401).json(responseError({ message: 'Credenciales inválidas' }));
+                return;
             }
 
-            res.status(200).json(result);
-        } catch (error) {
-            res.status(500).json({
-                data: null,
-                error: { message: 'Error en el servidor', details: error.message },
-                status: 'error'
+            res.cookie("refreshToken", result.refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 días
             });
+
+            res.status(200).json(responseOk({token: result.token, user: result.currentUser}));
+        } catch (error: any) {
+            res.status(500).json(responseError({ message: error.message }));
         }
     }
 
     logout = async (req: Request, res: Response): Promise<void> => {
         try {
-            const userId = req.user?.userId;
-
+            const userId = req.user?.foreignPersonId;
             if (!userId) {
-                res.status(401).json({
-                    data: null,
-                    error: { message: 'No autorizado' },
-                    status: 'error'
-                });
+                res.status(401).json(responseError({ message: 'Usted no está autorizado' }));
                 return;
             }
 
-            const success = await this.authBO.logout(userId);
+            await this.authBO.logout(userId);
+
+            res.clearCookie("refreshToken");
 
             res.status(200).json( responseOk({ message: 'Sesión cerrada correctamente' }));
-        } catch (error) {
-            res.status(500).json( responseError({ message: 'Error en el servidor', details: error.message }));
+        } catch (error: any) {
+            res.status(500).json( responseError({ message: error.message }));
         }
     }
 
-    register = async (req: Request, res: Response): Promise<void> => {
+    refresh = async (req: Request, res: Response):Promise<void> => {
         try {
-            const { name, email, password } = req.body;
+            // Obtener token de cookie o del cuerpo de la petición
+            const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
-            if (!name || !email || !password) {
-                res.status(400).json({
-                    data: null,
-                    error: { message: 'Todos los campos son requeridos' },
-                    status: 'error'
-                });
-                return;
+            if (!refreshToken) {
+                res.status(400).json(responseError({ message: "Refresh token es requerido" }));
             }
 
-            const result = await this.authBO.register({ name, email, password });
+            const tokens = await this.authBO.refreshToken(refreshToken);
 
-            res.status(201).json({
-                data: result,
-                error: null,
-                status: 'success'
+            // Actualizar cookie
+            res.cookie("refreshToken", tokens.refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
             });
-        } catch (error) {
-            if (error.message === 'El email ya está registrado') {
-                res.status(409).json({
-                    data: null,
-                    error: { message: error.message },
-                    status: 'error'
-                });
-                return;
-            }
 
-            res.status(500).json({
-                data: null,
-                error: { message: 'Error en el servidor', details: error.message },
-                status: 'error'
-            });
+            res.status(200).json(responseOk({
+                message: "Token actualizado exitosamente",
+                accessToken: tokens.accessToken
+            }));
+        } catch (error: any) {
+            res.status(401).json(responseError({ message: error.message }));
         }
-    }
+    };
 
-    reset = async (req: Request, res: Response): Promise<void> => {
+    forgotPassword = async (req: Request, res: Response): Promise<void> => {
         try {
             const { email } = req.body;
 
             if (!email) {
-                res.status(400).json({
-                    data: null,
-                    error: { message: 'Email es requerido' },
-                    status: 'error'
-                });
-                return;
+                res.status(400).json(responseError({ message: "El email es requerido" }));
             }
 
-            const success = await this.authBO.resetPassword({ email })
-console.log(success)
-            res.status(200).json({
-                data: { message: 'Si el email existe, se enviará un enlace para restablecer la contraseña' },
-                error: null,
-                status: 'success'
-            });
-        } catch (error) {
-            res.status(500).json({
-                data: null,
-                error: { message: 'Error en el servidor', details: error.message },
-                status: 'error'
-            });
-        }
-    }
+            //Enviar un correo para reestablecer password, por ahora devolvemos un token
+            const resetToken = await this.authBO.forgotPassword(email);
 
-    session = async (req: Request, res: Response): Promise<void> => {
+            res.status(200).json(responseOk({
+                message: "Se ha enviado un email con instrucciones para restablecer la contraseña",
+                resetToken // no retornar esto en producción, aca solo en pruebas
+            }));
+        } catch (error: any) {
+            res.status(400).json(responseError({ message: error.message }));
+        }
+    };
+
+    resetPassword = async (req: Request, res: Response): Promise<void> => {
         try {
-            // El middleware verifyToken ya habría validado el token y añadido el userId al request, una nota!!!
-            const userId = req.user?.userId
+            const { token, newPassword } = req.body;
 
-            if (!userId) {
-                res.status(401).json({
-                    data: null,
-                    error: { message: 'No autorizado' },
-                    status: 'error'
-                });
-                return;
+            if (!token || !newPassword) {
+                res.status(400).json({ message: "Token y nueva contraseña son requeridos" });
             }
 
-            const userInfo = await this.authBO.validateSession(userId);
+            await this.authBO.resetPassword(token, newPassword);
 
-            if (!userInfo) {
-                res.status(404).json({
-                    data: null,
-                    error: { message: 'Usuario no encontrado' },
-                    status: 'error'
-                });                return;
-            }
-
-            res.status(200).json({
-                data: { user: userInfo },
-                error: null,
-                status: 'success'
-            });
-        } catch (error) {
-            res.status(500).json({
-                data: null,
-                error: { message: 'Error en el servidor', details: error.message },
-                status: 'error'
-            });
+            res.status(200).json(responseOk({ message: "Contraseña actualizada exitosamente" }));
+        } catch (error: any) {
+            res.status(400).json(responseError({ message: error.message }));
         }
-    }
+    };
 }

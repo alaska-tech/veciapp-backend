@@ -11,7 +11,7 @@ import {
     VendorValidateEmailRequestExtended,
     VendorCreateResponse,
     VendorStatsRequestExtended,
-    VendorStats
+    VendorStats, VendorManageStatusRequestExtended
 } from '../types/vendor';
 import {responseError, responseOk} from "../utils/standardResponseServer";
 
@@ -93,13 +93,26 @@ export class VendorUseCases {
         }
     }
 
-    updateVendor = async (req: VendorUpdateRequestExtended, res: Response<ApiResponse<VendorResponse>>): Promise<void> => {
+    updateVendor = async (req: VendorUpdateRequestExtended, res: Response<ApiResponse<VendorCreateResponse>>): Promise<void> => {
         try {
             const vendor = await this.vendorBO.updateVendor(req.params.id, req.body);
             if (vendor) {
-                res.status(200).json(responseOk(vendor));
+                res.status(200).json(responseOk({ id: vendor.id, message: 'El Veci-proveedor ha sido actualizado con exito!'}));
             } else {
-                res.status(404).json(responseError({ message: 'Vendedor no encontrado' }));
+                res.status(404).json(responseError({ message: 'Veci-proveedor no encontrado' }));
+            }
+        } catch (error: any) {
+            res.status(400).json(responseError({ message: error.message }));
+        }
+    }
+
+    manageStatus = async (req: VendorManageStatusRequestExtended, res: Response<ApiResponse<VendorCreateResponse>>): Promise<void> => {
+        try {
+            const vendor = await this.vendorBO.changeStatusVendor(req.params.id, req.body);
+            if (vendor) {
+                res.status(200).json(responseOk({ id: vendor.id, message: 'El estado del Veci-proveedor ha sido actualizado con exito!'}));
+            } else {
+                res.status(404).json(responseError({ message: 'Veci-proveedor no encontrado' }));
             }
         } catch (error: any) {
             res.status(400).json(responseError({ message: error.message }));
@@ -110,9 +123,9 @@ export class VendorUseCases {
         try {
             const success = await this.vendorBO.deleteVendor(req.params.id);
             if (success) {
-                res.status(200).json(responseOk({ message: 'Vendedor eliminado correctamente' }));
+                res.status(200).json(responseOk({ message: 'El Veci-proveedor se ha eliminado correctamente' }));
             } else {
-                res.status(404).json(responseError({ message: 'Vendedor no encontrado' }));
+                res.status(404).json(responseError({ message: 'Veci-proveedor no encontrado' }));
             }
         } catch (error: any) {
             res.status(500).json(responseError({ message: error.message }));
@@ -121,7 +134,7 @@ export class VendorUseCases {
 
     validateEmail = async (req: VendorValidateEmailRequestExtended, res: Response<ApiResponse<VendorResponse>>): Promise<void> => {
         try {
-            const vendor = await this.vendorBO.validateEmail(req.params.hash);
+            const vendor = await this.vendorBO.validateEmail(req);
             if (vendor) {
                 res.status(200).json(responseOk(vendor));
             } else {

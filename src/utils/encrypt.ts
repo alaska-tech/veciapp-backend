@@ -1,5 +1,6 @@
 import crypto from 'crypto'
-import {SECRET, IV} from "./constants";
+import {SECRET, IV, SALT} from "./constants";
+import bcrypt from 'bcrypt'
 
 //encriptar
 export const encrypt = (text: string)=> {
@@ -17,4 +18,9 @@ export const decrypt = (text: string)=> {
     let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
+}
+
+//hashPassword
+export const hashPassword = async (password: string): Promise<string> => {
+    return await bcrypt.hash(password, SALT)
 }

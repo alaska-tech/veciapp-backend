@@ -17,18 +17,10 @@ export class ParameterUseCases {
           status: "success",
         });
       } else {
-        res.status(404).json({
-          data: null,
-          error: { message: "Parámetro no encontrado" },
-          status: "error",
-        });
+        res.status(404).json(responseError({ message: "Parámetro no encontrado" }));
       }
-    } catch (error) {
-      res.status(400).json({
-        data: null,
-        error: { message: error.message },
-        status: "error",
-      });
+    } catch (error: any) {
+      res.status(400).json(responseError({ message: error.message }));
     }
   }
 

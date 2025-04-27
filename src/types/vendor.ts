@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import {vendorState} from "../models/vendor.entity";
 
 // Interfaces para Request
 
@@ -23,6 +24,11 @@ export interface VendorCreateRequest {
     bankAccount?: BankAccount;
 }
 
+export interface VendorManageStatusRequest {
+    changeTo: vendorState;
+    reason: string;
+}
+
 export interface VendorUpdateRequest extends Partial<VendorCreateRequest> {}
 
 
@@ -34,6 +40,13 @@ export interface VendorCreateRequestExtended extends Request {
 
 export interface VendorUpdateRequestExtended extends Request {
     body: VendorUpdateRequest;
+    params: {
+        id: string;
+    };
+}
+
+export interface VendorManageStatusRequestExtended extends Request {
+    body: VendorManageStatusRequest;
     params: {
         id: string;
     };
@@ -54,8 +67,10 @@ export interface VendorPaginationRequestExtended extends Request {
 }
 
 export interface VendorValidateEmailRequestExtended extends Request {
-    params: {
+    body: {
         hash: string;
+        code: string;
+        pass: string;
     };
 }
 
@@ -108,4 +123,5 @@ export interface VendorStats {
     total_vendors: number;
     active_vendors: number;
     inactive_vendors: number;
+    verified_pending: number;
 }

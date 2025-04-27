@@ -52,8 +52,8 @@ export class Account {
   @Column({ type: 'timestamp', nullable: true })
   passwordResetExpires: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
-  hasPasswordChange: Date;
+  @Column({default: false })
+  hasPasswordChange: boolean;
 
   @Column({ type: 'timestamp', nullable: true })
   lastLoginDate: Date;

@@ -3,6 +3,7 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
+    DeleteDateColumn,
     UpdateDateColumn, OneToOne, JoinColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
@@ -67,10 +68,13 @@ export class Vendor {
     state: vendorState;
 
     @Column({ type: 'jsonb', default: [] })
-    stateHistory: Array<{ state: vendorState; changedAt: Date }>;
+    stateHistory: Array<{ state: vendorState; changedAt: Date, reason: string }>;
 
     @Column({ default: true })
     isActive: boolean;
+
+    @Column({ default: false })
+    isReadyToSell: boolean;
 
     @Column({ type: 'float', default: 0 })
     rank: number;
@@ -99,6 +103,10 @@ export class Vendor {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @DeleteDateColumn({ nullable: true })
+    deletedAt?: Date;
+
 
     // Relación con User
 /*    @OneToOne(() => UserEntity, user => user.vendor)
