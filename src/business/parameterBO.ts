@@ -1,6 +1,7 @@
 import {Parameter} from "../models/parameter.entity";
 import {Repository} from "typeorm";
 import {AppDataSource} from "../config/database";
+import {CreateParameterRequestExtended} from "../types/parameters";
 
 export class ParameterBO {
     private repository: Repository<Parameter>;
@@ -18,7 +19,8 @@ export class ParameterBO {
         return parameter.isActive;
     }
 
-    async toggleParameterStatus(id: string, userRole: string): Promise<Parameter | null> {
+    async toggleParameterStatus(id: string): Promise<Parameter | null> {
+
         if (userRole !== 'admin') {
             throw new Error('No tienes permisos para realizar esta acción');
         }
@@ -47,31 +49,33 @@ export class ParameterBO {
         });
     }
 
-    async createParameter(parameterData: Omit<Parameter, 'id' | 'createdAt' | 'updatedAt'>): Promise<Parameter> {
+    async createParameter(parameterData: CreateParameterRequestExtended ): Promise<Parameter> {
         // implementar validaciones de negocio
-        if (!parameterData.displayName) {
+        const parameterDataBody = parameterData.body
+
+        if (!parameterDataBody.displayName) {
             throw new Error('El nombre para mostrar es requerido');
         }
 
-        if (!parameterData.name) {
+        if (!parameterDataBody.name) {
             throw new Error('El nombre del usuario es requerido');
         }
 
-        if (!parameterData.description) {
+        if (!parameterDataBody.description) {
             throw new Error('La descripción del parámetro es requerida');
         }
 
-        if (!parameterData.value) {
+        if (!parameterDataBody.value) {
             throw new Error('El valor del parámetro es requerido');
         }
 
         // implementar reglas de negocio adicionales
-        const existingParameter = await this.getParameterByName(parameterData.name)
+        const existingParameter = await this.getParameterByName(parameterDataBody.name)
         if (existingParameter) {
             throw new Error('El parámetro ya había sido registrado antes.')
         }
 
-        const newParameter = await this.repository.create({ ...parameterData })
+        const newParameter = await this.repository.create({ ...parameterDataBody })
 
         const response = await this.repository.save(newParameter);
 

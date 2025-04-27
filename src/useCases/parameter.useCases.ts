@@ -1,21 +1,32 @@
-import {Request, Response} from "express";
-import {ParameterBO} from "../business/parameterBO";
+import { Request, Response } from "express";
+import { ParameterBO } from "../business/parameterBO";
+import {
+  ToggleParameterStatusRequestExtended,
+  ToggleParameterStatusResponse,
+  ApiResponse,
+  CreateParameterRequestExtended,
+  CreateParameterResponse,
+  GetAllParameterRequestExtended, ParameterResponse,
+  GetParameterByNameResponse, ParametersData,
+  UpdateParameterRequestExtended,
+} from "../types/parameters"
+import { responseError, responseOk } from "../utils/standardResponseServer";
 
 export class ParameterUseCases {
   private parameterBO: ParameterBO = new ParameterBO();
 
-  toggleParameterStatus = async (req: Request, res: Response): Promise<void> => {
+  toggleParameterStatus = async (req: ToggleParameterStatusRequestExtended, res: Response<ApiResponse<ToggleParameterStatusResponse>>): Promise<void> => {
     try {
-      const parameter = await this.parameterBO.toggleParameterStatus(
-        req.params.id,
-        req.body.userRole
-      );
+      const parameter = await this.parameterBO.toggleParameterStatus(req.params.id);
+
       if (parameter) {
-        res.status(200).json({
-          data: parameter,
-          error: null,
-          status: "success",
-        });
+        const toggle: ToggleParameterStatusResponse = {
+          id: parameter.id,
+          isActive: parameter.isActive,
+          message: "El estado del parametro se ha cambiado satisfactoriamente"
+        }
+
+        res.status(200).json(responseOk(toggle));
       } else {
         res.status(404).json(responseError({ message: "Parámetro no encontrado" }));
       }
@@ -24,20 +35,15 @@ export class ParameterUseCases {
     }
   }
 
-  createParameter = async (req: Request, res: Response): Promise<void> => {
+  createParameter = async (req: CreateParameterRequestExtended, res: Response<ApiResponse<CreateParameterResponse>>): Promise<void> => {
     try {
-      const parameter = await this.parameterBO.createParameter(req.body);
-      res.status(201).json({
-        data: parameter,
-        error: null,
-        status: "success",
-      });
-    } catch (error) {
-      res.status(400).json({
-        data: null,
-        error: { message: error.message },
-        status: "error",
-      });
+      const parameter = await this.parameterBO.createParameter(req);
+      res.status(201).json(responseOk({
+        id: parameter.id,
+        message: "Parametro creado satisfactoriamente!"
+      }));
+    } catch (error: any) {
+      res.status(400).json(responseError({ message: error.message }))
     }
   }
 
@@ -57,34 +63,23 @@ export class ParameterUseCases {
           status: "error",
         });
       }
-    } catch (error) {
-      res.status(500).json({
-        data: null,
-        error: { message: error.message },
-        status: "error",
-      });
+    } catch (error: any) {
+      res.status(400).json(responseError({ message: error.message }))
     }
   }
 
-  getAllParameters = async (req: Request, res: Response): Promise<void> => {
+  getAllParameters = async (req: GetAllParameterRequestExtended, res: Response<ApiResponse<ParameterResponse>>): Promise<void> => {
     try {
-      const { limit = 10, page = 1 } = req.query;
+      const { limit = 10, page = 1 } = req.params;
       const [parameters, count] = await this.parameterBO.getAllParameters(
         Number(limit),
         Number(page)
       );
-      res.status(200).json({
-        data: parameters,
-        count,
-        error: null,
-        status: "success",
-      });
-    } catch (error) {
-      res.status(500).json({
-        data: null,
-        error: { message: error.message },
-        status: "error",
-      });
+      const parameterData = parameters as ParametersData[]
+      const parameter: ParameterResponse = { parameters: parameterData, count: count }
+      res.status(200).json(responseOk(parameter));
+    } catch (error: any) {
+      res.status(400).json(responseError({ message: error.message }))
     }
   }
 
