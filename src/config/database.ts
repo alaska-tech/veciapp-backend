@@ -45,16 +45,13 @@ const baseConfig: DataSourceOptions = {
     synchronize: false, //!isProduction         // Cuidado en producción
     logging: ['error'],
     // Configuración para PostGIS
+
     extra: {
         postgisExtension: true,
-        ssl: false,
+        ssl: {
+            rejectUnauthorized: false, // Necesario para Xata
+        },
     }
-    // extra: {
-    //     postgisExtension: true,
-    //     ssl: {
-    //         rejectUnauthorized: false, // Necesario para Xata
-    //     },
-    // }
 };
 
 export const AppDataSource = new DataSource(baseConfig);

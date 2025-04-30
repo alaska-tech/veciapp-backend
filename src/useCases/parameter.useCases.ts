@@ -79,7 +79,7 @@ export class ParameterUseCases {
       const parameter: ParameterResponse = { parameters: parameterData, count: count }
       res.status(200).json(responseOk(parameter));
     } catch (error: any) {
-      res.status(400).json(responseError({ message: error.message }))
+      res.status(400).json(responseError({ message: error.message } as any))
     }
   }
 
@@ -102,7 +102,7 @@ export class ParameterUseCases {
           status: "error",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       res.status(400).json({
         data: null,
         error: { message: error.message },
@@ -127,7 +127,7 @@ export class ParameterUseCases {
           status: "error",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({
         data: null,
         error: { message: error.message },
@@ -152,7 +152,7 @@ export class ParameterUseCases {
           status: "error",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({
         data: null,
         error: { message: error.message },

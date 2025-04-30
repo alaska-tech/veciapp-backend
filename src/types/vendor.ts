@@ -10,6 +10,8 @@ export interface BankAccount {
 }
 
 export interface VendorCreateRequest {
+    isActive: boolean;
+    state: vendorState
     internalCode: string;
     fullName: string;
     email: string;
@@ -40,6 +42,12 @@ export interface VendorCreateRequestExtended extends Request {
 
 export interface VendorUpdateRequestExtended extends Request {
     body: VendorUpdateRequest;
+    params: {
+        id: string;
+    };
+}
+
+export interface VendorGetRequestExtended extends Request {
     params: {
         id: string;
     };

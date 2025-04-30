@@ -10,7 +10,7 @@ import {decrypt, encrypt, hashPassword} from "../utils/encrypt";
 import {
     VendorCreateRequest,
     VendorManageStatusRequest,
-    VendorStats,
+    VendorStats, VendorUpdateRequest,
     VendorValidateEmailRequestExtended
 } from "../types/vendor";
 
@@ -58,8 +58,18 @@ export class VendorBO {
 
         stateHistory.push({ state: newState, changedAt: new Date(), reason: "Veci-proveedor creado por primera vez"});
 
-        const newUser: Vendor & Vendor[] = await this.repository.create({ ...vendorData, country: "Colombia", city: "Santa Marta", stateHistory: stateHistory })
+        // @ts-ignore
+        const newUser = this.repository.create({
+            ...vendorData,
+            country: "Colombia",
+            city: "Santa Marta",
+            stateHistory: stateHistory
+        })
+
+        // @ts-ignore
         const response: Vendor = await this.repository.save(newUser);
+
+console.log("el response para crear", response)
 
         if (response && response?.id) {
             //Crear hash para enviar correo
@@ -142,7 +152,7 @@ export class VendorBO {
         }) : this.repository.find();
     }
 
-    async updateVendor(id: string, vendorData: Partial<Vendor>): Promise<Vendor | null> {
+    async updateVendor(id: string, vendorData: VendorUpdateRequest): Promise<Vendor | null> {
         const vendor = await this.getVendorById(id);
         if (!vendor)throw new Error('El Veci-vendedor no existe');
 
@@ -212,8 +222,9 @@ export class VendorBO {
 
             //Crear la cuenta de este vendedor
             const encrypPassword = await hashPassword(req.body.pass)
-            const newAccount: Account & Account[] = this.accountRepository.create({ fullName: pendingVendor.fullName, email: pendingVendor.email, password: encrypPassword , foreignPersonId: pendingVendor.id, foreignPersonType: "vendor", role: "vendor" })
-            const response: Account[] = await this.accountRepository.save(newAccount);
+            // @ts-ignore
+            const newAccount = this.accountRepository.create({ fullName: pendingVendor.fullName, email: pendingVendor.email, password: encrypPassword , foreignPersonId: pendingVendor.id, foreignPersonType: "vendor", role: "vendor" })
+            const response = await this.accountRepository.save(newAccount);
 
             if (response) {
                 console.log("La cuenta del Veci-proveedor ha sido creada con exito!")

@@ -3,11 +3,19 @@ import * as jwt from 'jsonwebtoken';
 import {responseError} from "../utils/standardResponseServer";
 import {SECRET} from "../utils/constants";
 
+interface userToken {
+    foreignPersonId: string;
+    fullName: string;
+    email: string;
+    role: string;
+}
+
 // Extiende la interfaz Request para incluir el usuario
 declare global {
     namespace Express {
         interface Request {
-            user?: any;
+            // @ts-ignore
+            user?: userToken | undefined;
         }
     }
 }
@@ -27,7 +35,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
 
     try {
         const jwtSecret = SECRET || '1234';
-        const decoded = jwt.verify(token, jwtSecret);
+        const decoded = jwt.verify(token, jwtSecret) as userToken;
 
         // Añadir el usuario decodificado al request
         req.user = decoded;

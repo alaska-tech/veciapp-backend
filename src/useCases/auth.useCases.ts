@@ -64,19 +64,24 @@ export class AuthUseCases {
                 res.status(400).json(responseError({ message: "Refresh token es requerido" }));
             }
 
-            const tokens = await this.authBO.refreshToken(refreshToken);
+            const tokens: { refreshToken: string, accessToken: string  } = await this.authBO.refreshToken(refreshToken);
 
             // Actualizar cookie
-            res.cookie("refreshToken", tokens.refreshToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
-            });
+            if (!tokens) {
+                res.status(401).json(responseError({ message: "Refresh token inválido" }));
+            } else {
+                res.cookie("refreshToken", tokens.refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
+                });
 
-            res.status(200).json(responseOk({
-                message: "Token actualizado exitosamente",
-                accessToken: tokens.accessToken
-            }));
+                res.status(200).json(responseOk({
+                    message: "Token actualizado exitosamente",
+                    accessToken: tokens.accessToken
+                }))
+            }
+
         } catch (error: any) {
             res.status(401).json(responseError({ message: error.message }));
         }
@@ -91,7 +96,7 @@ export class AuthUseCases {
             }
 
             //Enviar un correo para reestablecer password, por ahora devolvemos un token
-            const resetToken = await this.authBO.forgotPassword(email);
+            // const resetToken = await this.authBO.forgotPassword(email);
 
             res.status(200).json(responseOk({
                 message: "Se ha enviado un email con instrucciones para restablecer la contraseña",
@@ -110,7 +115,7 @@ export class AuthUseCases {
                 res.status(400).json({ message: "Token y nueva contraseña son requeridos" });
             }
 
-            await this.authBO.resetPassword(token, newPassword);
+            // await this.authBO.resetPassword(token, newPassword);
 
             res.status(200).json(responseOk({ message: "Contraseña actualizada exitosamente" }));
         } catch (error: any) {

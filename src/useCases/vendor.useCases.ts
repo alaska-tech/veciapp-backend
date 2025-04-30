@@ -6,7 +6,6 @@ import {
     VendorGetRequestExtended,
     VendorPaginationRequestExtended,
     VendorResponse,
-    VendorPaginatedResponse,
     VendorUpdateRequestExtended,
     VendorValidateEmailRequestExtended,
     VendorCreateResponse,
@@ -54,7 +53,7 @@ export class VendorUseCases {
                 startDate = new Date(startStr);
                 // Validamos que la fecha de inicio sea válida
                 if (isNaN(startDate.getTime())) {
-                    res.status(400).json(responseError({ message: 'Formato de fecha de inicio inválido. Use YYYY-MM-DD' }));
+                    res.status(400).json(responseError({ message: 'Formato de fecha de inicio inválido. Use YYYY-MM-DD' } as any));
                     return;
                 }
             }
@@ -63,7 +62,7 @@ export class VendorUseCases {
                 endDate = new Date(endStr);
                 // Validamos que la fecha final sea válida
                 if (isNaN(endDate.getTime())) {
-                    res.status(400).json(responseError({ message: 'Formato de fecha final inválido. Use YYYY-MM-DD' }));
+                    res.status(400).json(responseError({ message: 'Formato de fecha final inválido. Use YYYY-MM-DD' } as any));
                     return;
                 }
                 // Aseguramos que la fecha final sea el último momento del día
@@ -72,7 +71,7 @@ export class VendorUseCases {
 
             // Si se proporciona solo una fecha, respondemos con error
             if ((startDate && !endDate) || (!startDate && endDate)) {
-                res.status(400).json(responseError({ message: 'Debe proporcionar ambas fechas (start y end) o ninguna' }));
+                res.status(400).json(responseError({ message: 'Debe proporcionar ambas fechas (start y end) o ninguna' } as any));
                 return;
             }
 
@@ -80,16 +79,16 @@ export class VendorUseCases {
 
             res.status(200).json(responseOk(stats));
         } catch (error: any) {
-            res.status(500).json(responseError({ message: error.message }));
+            res.status(500).json(responseError({ message: error.message } as any));
         }
     }
 
-    getAllVendors = async (req: VendorPaginationRequestExtended, res: Response<ApiResponse<VendorPaginatedResponse>>): Promise<void> => {
+    getAllVendors = async (req: VendorPaginationRequestExtended, res: Response<ApiResponse<any>>): Promise<void> => {
         try {
-            const vendors = await this.vendorBO.getAllVendors(req.params.limit, req.params.page);
+            const vendors = await this.vendorBO.getAllVendors(Number(req.params.limit), Number(req.params.page));
             res.status(200).json(responseOk(vendors));
         } catch (error: any) {
-            res.status(500).json(responseError({ message: error.message }));
+            res.status(500).json(responseError({ message: error.message }  as any));
         }
     }
 
@@ -140,7 +139,7 @@ export class VendorUseCases {
             } else {
                 res.status(404).json(responseError({ message: 'El link es inválido o ya expiró' }));
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json(responseError({ message: error.message }));
         }
     }

@@ -4,7 +4,6 @@ import { CustomerBO } from '../business/customerBO';
 export class CustomerUseCases {
     private customerBO: CustomerBO = new CustomerBO();
 
-
 //TODO: las respuestas y los request(req.body) deberian pasarse por la interface que ya tengo definida en /types
     createCustomer = async (req: Request, res: Response): Promise<void> => {
         try {
@@ -14,7 +13,7 @@ export class CustomerUseCases {
                 error: null,
                 status: 'success'
             });
-        } catch (error) {
+        } catch (error: any) {
             res.status(400).json({
                 data: null,
                 error: { message: error.message },
@@ -60,7 +59,7 @@ export class CustomerUseCases {
                 status: 'success'
             });
 
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },
@@ -85,7 +84,7 @@ export class CustomerUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(400).json({
                 data: null,
                 error: { message: error.message },
@@ -135,7 +134,7 @@ export class CustomerUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },

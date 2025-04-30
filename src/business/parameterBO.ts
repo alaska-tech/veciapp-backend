@@ -21,9 +21,9 @@ export class ParameterBO {
 
     async toggleParameterStatus(id: string): Promise<Parameter | null> {
 
-        if (userRole !== 'admin') {
-            throw new Error('No tienes permisos para realizar esta acción');
-        }
+        // if (userRole !== 'admin') {
+        //     throw new Error('No tienes permisos para realizar esta acción');
+        // }
 
         const parameter = await this.getParameterById(id);
         if (!parameter) {

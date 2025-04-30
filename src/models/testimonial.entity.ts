@@ -9,35 +9,35 @@ import {
 @Entity('testimonials')
 export class Testimonial {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  productServiceId: string;
+  productServiceId!: string;
 
   @Column({ type: 'uuid' })
-  customerId: string;
+  customerId!: string;
 
   @Column({ type: 'uuid' })
-  orderId: string;
+  orderId!: string;
 
   @Column({ type: 'int' })
-  stars: number;
+  stars!: number;
 
   @Column({ type: 'text' })
-  comment: string;
+  comment!: string;
 
   @Column({ type: 'text', nullable: true })
-  reply: string;
+  reply!: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  replyDate: Date;
+  replyDate!: Date;
 
   @Column({ default: false })
-  isApproved: boolean;
+  isApproved!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

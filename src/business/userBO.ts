@@ -64,6 +64,6 @@ export class UserBO {
     }
 
     private async hashPassword(password: string): Promise<string> {
-        return await bcrypt.hash(password, SALT)
+        return await bcrypt.hash(password, SALT || 1234);
     }
 }

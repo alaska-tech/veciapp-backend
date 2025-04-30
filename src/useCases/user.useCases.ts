@@ -14,7 +14,7 @@ export class UserUseCases {
                 error: null,
                 status: 'success'
             });
-        } catch (error) {
+        } catch (error: any) {
             res.status(400).json({
                 data: null,
                 error: { message: error.message },
@@ -65,7 +65,7 @@ export class UserUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },
@@ -115,7 +115,7 @@ export class UserUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },
