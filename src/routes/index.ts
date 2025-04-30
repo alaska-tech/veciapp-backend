@@ -10,7 +10,7 @@ import orders from './orders'
 import categories from './categories'*/
 import parameters from './parameters'
 
-router.use('/authentication', auth)
+router.use('/auth', auth)
 router.use('/users', users)
 
 router.use('/vendors', vendors)

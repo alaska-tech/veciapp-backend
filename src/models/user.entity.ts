@@ -1,7 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
-
-import { Customer } from './customer.entity';
-import { vendor } from './vendor.entity';
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 
 export enum AccountType {
     CUSTOMER = "customer",
@@ -12,34 +9,34 @@ export enum AccountType {
 @Entity('users')
 export class UserEntity {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({ type: 'varchar', length: 100 })
-    fullname: string;
+    fullname!: string;
 
     @Column({
         type: "varchar",
         length: 255,
         unique: true
     })
-    email: string;
+    email!: string;
 
     @Column({
         type: "varchar",
         length: 255,
         select: false // para que la contraseña no se devuelva en consultas
     })
-    password: string;
+    password!: string;
 
     @Column()
-    foreignPerson: string;
+    foreignPerson!: string;
 
     @Column({
         type: "enum",
         enum: AccountType,
         default: AccountType.CUSTOMER
     })
-    role: AccountType;
+    role!: AccountType;
 
     @Column({
         type: "boolean",

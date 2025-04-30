@@ -9,29 +9,29 @@ import {
 @Entity('shopping_cart')
 export class ShoppingCart {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  customerId: string;
+  customerId!: string;
 
   @Column({ type: 'uuid' })
-  productServiceId: string;
+  productServiceId!: string;
 
   @Column({ type: 'uuid' })
-  branchId: string;
+  branchId!: string;
 
   @Column({ type: 'int' })
-  quantity: number;
+  quantity!: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  unitPrice: string;
+  unitPrice!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  totalPrice: string;
+  totalPrice!: string;
 
   @Column({ type: 'timestamp' })
-  addedAt: Date;
+  addedAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

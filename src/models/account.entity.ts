@@ -20,47 +20,47 @@ export enum AccountRole {
 @Entity('accounts')
 export class Account {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'varchar', length: 255 })
-  fullName: string;
+  fullName!: string;
 
   @Column({ type: 'varchar', length: 150, unique: true })
-  email: string;
+  email!: string;
 
   @Column({ type: 'varchar', length: 255 })
-  password: string;
+  password!: string;
 
   @Column({ type: 'uuid' })
-  foreignPersonId: string;
+  foreignPersonId!: string;
 
   @Column({ type: 'enum', enum: ForeignPersonType })
-  foreignPersonType: ForeignPersonType;
+  foreignPersonType!: ForeignPersonType;
 
   @Column({ type: 'enum', enum: AccountRole })
-  role: AccountRole;
+  role!: AccountRole;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ type: 'text', nullable: true })
-  refreshToken: string;
+  refreshToken!: string;
 
   @Column({ type: 'text', nullable: true })
-  passwordResetToken: string;
+  passwordResetToken!: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  passwordResetExpires: Date;
+  passwordResetExpires!: Date;
+
+  @Column({default: false })
+  hasPasswordChange!: boolean;
 
   @Column({ type: 'timestamp', nullable: true })
-  hasPasswordChange: Date;
-
-  @Column({ type: 'timestamp', nullable: true })
-  lastLoginDate: Date;
+  lastLoginDate!: Date;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

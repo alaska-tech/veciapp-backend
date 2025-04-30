@@ -17,32 +17,39 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@awaitjs/express": "^0.9.0",
-    "@hapi/joi": "^17.1.1",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "express": "^4.19.2",
     "express-handlebars": "^8.0.1",
     "geojson": "^0.5.0",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.10.0",
+    "nodemailer": "^6.10.1",
     "nodemailer-express-handlebars": "^7.0.0",
-    "pg": "^8.14.1",
+    "pg": "^8.11.3",
     "reflect-metadata": "^0.2.2",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.21",
+    "typeorm-naming-strategies": "^4.1.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
+    "@types/express": "^4.17.21",
     "@types/geojson": "^7946.0.16",
-    "@types/node": "^22.13.14",
+    "@types/http-errors": "^2.0.4",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.12.3",
     "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer-express-handlebars": "^4.0.5",
+    "@types/uuid": "^9.0.8",
     "nodemon": "^3.1.9",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

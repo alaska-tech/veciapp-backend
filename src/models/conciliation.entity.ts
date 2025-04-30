@@ -9,80 +9,80 @@ import {
 @Entity('conciliations')
 export class Conciliation {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  vendorId: string;
+  vendorId!: string;
 
   @Column({ type: 'uuid' })
-  branchId: string;
+  branchId!: string;
 
   @Column({ type: 'varchar' })
-  cohort: string;
+  cohort!: string;
 
   @Column({ type: 'timestamp' })
-  startDate: Date;
+  startDate!: Date;
 
   @Column({ type: 'timestamp' })
-  endDate: Date;
+  endDate!: Date;
 
   @Column({ type: 'json' })
   orders: any; // Detalle de órdenes incluidas
 
   @Column({ type: 'int' })
-  ordersCount: number;
+  ordersCount!: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  paymentAmount: string;
+  paymentAmount!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  profit: string;
+  profit!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  fee: string;
+  fee!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  taxAmount: string;
+  taxAmount!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  netAmount: string;
+  netAmount!: string;
 
   @Column({ default: 'COP' })
-  currency: string;
+  currency!: string;
 
   @Column({ type: 'enum', enum: ['pending', 'processed', 'paid'] })
-  status: 'pending' | 'processed' | 'paid';
+  status!: 'pending' | 'processed' | 'paid';
 
   @Column({ type: 'timestamp', nullable: true })
-  paymentDate: Date;
+  paymentDate!: Date;
 
   @Column({ nullable: true })
-  paymentReference: string;
+  paymentReference!: string;
 
   @Column({ nullable: true })
-  paymentMethod: string;
+  paymentMethod!: string;
 
   @Column({ type: 'json', nullable: true })
   bankAccount: any; // Datos bancarios utilizados para la transferencia
 
   @Column({ nullable: true })
-  notes: string;
+  notes!: string;
 
   @Column({ type: 'uuid' })
-  generatedBy: string; // ID del usuario que generó la conciliación
+  generatedBy!: string; // ID del usuario que generó la conciliación
 
   @Column({ type: 'uuid', nullable: true })
-  approvedBy: string; // ID del usuario que aprobó la conciliación
+  approvedBy!: string; // ID del usuario que aprobó la conciliación
 
   @Column({ nullable: true })
-  invoiceNumber: string;
+  invoiceNumber!: string;
 
   @Column({ nullable: true })
-  invoiceUrl: string; // URL del documento de factura
+  invoiceUrl!: string; // URL del documento de factura
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

@@ -9,74 +9,74 @@ import {
 @Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  orderNumber: string;
+  orderNumber!: string;
 
   @Column({ type: 'uuid' })
-  customerId: string;
+  customerId!: string;
 
   @Column({ type: 'uuid' })
-  vendorId: string;
+  vendorId!: string;
 
   @Column({ type: 'uuid' })
-  branchId: string;
+  branchId!: string;
 
   @Column({ type: 'json' })
   products: any; // Snapshot de productos al momento de compra
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  subtotal: string;
+  subtotal!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  taxAmount: string;
+  taxAmount!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  discountAmount: string;
+  discountAmount!: string;
 
   @Column({ nullable: true })
-  discountCode: string;
+  discountCode!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  deliveryFee: string;
+  deliveryFee!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  serviceFee: string;
+  serviceFee!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  totalAmount: string;
+  totalAmount!: string;
 
   @Column({ default: 'COP' })
-  currency: string;
+  currency!: string;
 
   @Column()
-  paymentMethod: string;
+  paymentMethod!: string;
 
   @Column({ type: 'enum', enum: ['pending', 'paid', 'failed'] })
-  paymentStatus: 'pending' | 'paid' | 'failed';
+  paymentStatus!: 'pending' | 'paid' | 'failed';
 
   @Column({ type: 'enum', enum: ['received', 'preparing', 'shipped', 'delivered'] })
-  orderStatus: 'received' | 'preparing' | 'shipped' | 'delivered';
+  orderStatus!: 'received' | 'preparing' | 'shipped' | 'delivered';
 
   @Column({ type: 'json', default: [] })
-  orderStatusHistory: any[];
+  orderStatusHistory!: any[];
 
   @Column({ type: 'enum', enum: ['delivery', 'pickup'] })
-  deliveryType: 'delivery' | 'pickup';
+  deliveryType!: 'delivery' | 'pickup';
 
   @Column({ type: 'json', nullable: true })
-  deliveryAddress: any;
+  deliveryAddress!: any;
 
   @Column({ type: 'json', nullable: true })
-  deliveryLocationCoordinates: { lat: number; lng: number };
+  deliveryLocationCoordinates!: { lat: number; lng: number };
 
   @Column({ default: false })
-  isRated: boolean;
+  isRated!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
