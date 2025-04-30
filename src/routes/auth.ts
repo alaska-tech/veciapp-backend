@@ -1,4 +1,4 @@
-import express from '@awaitjs/express'
+import express from 'express'
 import {AuthUseCases} from "../useCases/auth.useCases";
 import verifyToken from "../middlewares/validateToken";
 

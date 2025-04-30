@@ -1,6 +1,6 @@
 import { AccountRepository } from '../repositories/account.repository';
 import { Account, AccountRole } from '../models/account.entity'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
 import {SECRET, REFRESH_SECRET, TOKEN_EXPIRATION, REFRESH_TOKEN_EXPIRATION} from "../utils/constants";
 import { v4 as uuidv4 } from "uuid";

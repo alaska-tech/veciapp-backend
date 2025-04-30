@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { AppDataSource } from '../config/database';
 import {isValidEmail} from "../utils/validateEmails";
 import {SALT} from "../utils/constants";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 export class UserBO {
     private repository: Repository<UserEntity>;

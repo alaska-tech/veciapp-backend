@@ -4,7 +4,7 @@ import { CustomerRepository } from '../repositories/customer.repository';
 import { AppDataSource } from '../config/database';
 import {isValidEmail} from "../utils/validateEmails";
 import {SALT} from "../utils/constants";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import mailer from '../services/mailer'
 import {encrypt, decrypt} from "../utils/encrypt";
 import {generateOTP} from "../utils/codeGenerator";

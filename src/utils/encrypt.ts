@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import {SECRET, IV, SALT} from "./constants";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 //encriptar
 export const encrypt = (text: string)=> {
