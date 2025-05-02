@@ -23,86 +23,86 @@ export enum vendorState {
 @Entity('vendors')
 export class Vendor {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({ type: 'varchar', length: 100, unique: true })
-    internalCode: string;
+    internalCode!: string;
 
     @Column({ type: 'varchar', length: 255 })
-    fullName: string;
+    fullName!: string;
 
     @Column({ type: 'varchar', length: 100, unique: true })
-    identification: string;
+    identification!: string;
 
     @Column({ type: 'varchar', length: 150, unique: true })
-    email: string;
+    email!: string;
 
     @Column({ default: false })
-    isEmailVerified: boolean;
+    isEmailVerified!: boolean;
 
     @Column({ type: 'varchar', length: 20 })
-    cellphone: string;
+    cellphone!: string;
 
     @Column({ type: 'varchar', length: 100 })
-    country: string;
+    country!: string;
 
     @Column({ type: 'varchar', length: 100 })
-    city: string;
+    city!: string;
 
     @Column({ type: 'varchar', length: 255 })
-    address: string;
+    address!: string;
 
     @Column({ type: 'int', nullable: true })
-    age: number;
+    age!: number;
 
     @Column({ type: 'enum', enum: Gender, nullable: true })
-    gender: Gender;
+    gender!: Gender;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
-    avatar: string;
+    avatar!: string;
 
     @Column({ default: false })
-    isHabeasDataConfirm: boolean;
+    isHabeasDataConfirm!: boolean;
 
     @Column({ type: 'enum', enum: vendorState, default: vendorState.CREATED })
-    state: vendorState;
+    state!: vendorState;
 
     @Column({ type: 'jsonb', default: [] })
-    stateHistory: Array<{ state: vendorState; changedAt: Date, reason: string }>;
+    stateHistory!: Array<{ state: vendorState; changedAt: Date, reason: string }>;
 
     @Column({ default: true })
-    isActive: boolean;
+    isActive!: boolean;
 
     @Column({ default: false })
-    isReadyToSell: boolean;
+    isReadyToSell!: boolean;
 
     @Column({ type: 'float', default: 0 })
-    rank: number;
+    rank!: number;
 
     @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
-    incomes: string;
+    incomes!: string;
 
     @Column({ type: 'jsonb', nullable: true })
-    bankAccount: {
+    bankAccount!: {
         number: string;
         entity: string;
         type: 'Ahorros' | 'Corriente' | string;
     };
 
     @Column({ type: 'varchar', length: 255, nullable: true })
-    commercialRegistry: string;
+    commercialRegistry!: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
-    rut: string;
+    rut!: string;
 
     @Column({ type: 'text', nullable: true })
-    bio: string;
+    bio!: string;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @DeleteDateColumn({ nullable: true })
     deletedAt?: Date;

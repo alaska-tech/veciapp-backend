@@ -100,7 +100,7 @@ export class AuthUseCases {
 
             res.status(200).json(responseOk({
                 message: "Se ha enviado un email con instrucciones para restablecer la contraseña",
-                resetToken // no retornar esto en producción, aca solo en pruebas
+                //resetToken // no retornar esto en producción, aca solo en pruebas
             }));
         } catch (error: any) {
             res.status(400).json(responseError({ message: error.message }));
