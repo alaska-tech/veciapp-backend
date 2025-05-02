@@ -1,7 +1,6 @@
 import { Response } from 'express';
 import { VendorBO } from '../business/vendorBO';
 import {
-    ApiResponse,
     VendorCreateRequestExtended,
     VendorGetRequestExtended,
     VendorPaginationRequestExtended,
@@ -12,6 +11,7 @@ import {
     VendorStatsRequestExtended,
     VendorStats, VendorManageStatusRequestExtended
 } from '../types/vendor';
+import {ApiResponse} from '../types/serverResponse';
 import {responseError, responseOk} from "../utils/standardResponseServer";
 
 export class VendorUseCases {

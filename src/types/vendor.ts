@@ -84,15 +84,6 @@ export interface VendorValidateEmailRequestExtended extends Request {
 
 // Interfaces para Response
 
-export interface ApiResponse<T> {
-    data: T | null;
-    error: {
-        code: string;
-        message: string;
-    } | null;
-    status: string;
-}
-
 export interface VendorCreateResponse {
     id?: string;
     message: string;

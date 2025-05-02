@@ -15,7 +15,7 @@ import {
     VendorValidateEmailRequestExtended
 } from "../types/vendor";
 
-export class VendorBO {
+export class BranchBO {
     private repository: Repository<Vendor>;
     private accountRepository: Repository<Account>;
     private branchRepository: Repository<Branch>;

@@ -25,7 +25,6 @@ const mailer = async (user: any) => {
     if (user.email) {
         const html = await compileTemplate(user.template, {
             fullname: user.fullname,
-            state: user.state,
             title: user.title,
             message: user.message,
             anchor: user.anchor,

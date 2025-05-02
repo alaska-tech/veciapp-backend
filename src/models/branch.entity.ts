@@ -7,6 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { Point } from "geojson";
+
 
 export enum BranchState {
   ACTIVE = 'active',
@@ -54,12 +56,6 @@ export class Branch {
   @Column({ type: 'varchar', length: 100 })
   city!: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  phone!: string;
-
-  @Column({ type: 'varchar', length: 150, nullable: true })
-  email!: string;
-
   @Column({ type: 'float', default: 0 })
   rank!: number;
 
@@ -76,15 +72,6 @@ export class Branch {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   logo!: string;
-
-  @Column({ type: 'float', default: 0 })
-  deliveryRadius!: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  deliveryFee!: string;
-
-  @Column({ type: 'int', default: 0 })
-  estimatedDeliveryTime!: number;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   managerName!: string;
