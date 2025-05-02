@@ -1,39 +1,38 @@
-import { Repository } from 'typeorm';
-import { CustomerEntity } from '../models/customer.entity';
-import { AppDataSource } from '../config/database';
-import {UserEntity} from "../models/user.entity";
+import {Repository} from 'typeorm';
+import {Customer} from '../models/customer.entity';
+import {AppDataSource} from '../config/database';
 
 export class CustomerRepository {
-    private repository: Repository<CustomerEntity>;
+    private repository: Repository<Customer>;
 
     constructor() {
-        this.repository = AppDataSource.getRepository(CustomerEntity);
+        this.repository = AppDataSource.getRepository(Customer);
     }
 
-    async findById(id: string): Promise<CustomerEntity | null> {
+    async findById(id: string): Promise<Customer | null> {
         return this.repository.findOne({
             where: { id },
             relations: ['user']
         });
     }
 
-    async findByEmail(email: string): Promise<CustomerEntity | null> {
+    async findByEmail(email: string): Promise<Customer | null> {
         return this.repository.findOneBy({ email });
     }
 
-    async findByUserId(userId: string): Promise<CustomerEntity | null> {
-        return this.repository.findOne({
-            where: { user: { id: userId } },
-            relations: ['user']
-        });
-    }
+    // async findByUserId(userId: string): Promise<Customer | null> {
+    //     return this.repository.findOne({
+    //         where: { user: { id: userId } },
+    //         relations: ['user']
+    //     });
+    // }
 
-    async create(data: Partial<CustomerEntity>): Promise<CustomerEntity> {
+    async create(data: Partial<Customer>): Promise<Customer> {
         const customer = this.repository.create(data);
         return this.repository.save(customer);
     }
 
-    async update(id: string, data: Partial<CustomerEntity>): Promise<CustomerEntity | null> {
+    async update(id: string, data: Partial<Customer>): Promise<Customer | null> {
         const customer = await this.findById(id);
         if (!customer) return null;
 

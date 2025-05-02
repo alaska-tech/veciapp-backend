@@ -9,26 +9,26 @@ import {
 @Entity('wishlist')
 export class Wishlist {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  customerId: string;
+  customerId!: string;
 
   @Column({ type: 'uuid' })
-  productServiceId: string;
+  productServiceId!: string;
 
   @Column({ type: 'uuid' })
-  branchId: string;
+  branchId!: string;
 
   @Column({ type: 'text', nullable: true })
-  notes: string;
+  notes!: string;
 
   @Column({ type: 'int', default: 0 })
-  priority: number;
+  priority!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

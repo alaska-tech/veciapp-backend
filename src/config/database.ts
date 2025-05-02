@@ -43,9 +43,9 @@ const baseConfig: DataSourceOptions = {
 
     // Configuraciones adicionales
     synchronize: false, //!isProduction         // Cuidado en producción
-    logging: !isProduction,
-
+    logging: ['error'],
     // Configuración para PostGIS
+
     extra: {
         postgisExtension: true,
         ssl: {

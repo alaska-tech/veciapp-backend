@@ -16,12 +16,12 @@ export class VendorRepository {
         });
     }
 
-    async findByUserId(userId: string): Promise<Vendor | null> {
-        return this.repository.findOne({
-            where: { user: { id: userId } },
-            relations: ['user']
-        });
-    }
+    // async findByUserId(userId: string): Promise<Vendor | null> {
+    //     return this.repository.findOne({
+    //         where: { user: { id: userId } },
+    //         relations: ['user']
+    //     });
+    // }
 
     async findByEmail(email: string): Promise<Vendor | null> {
         return this.repository.findOneBy({ email });

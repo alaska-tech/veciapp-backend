@@ -1,32 +1,32 @@
 import { Repository } from 'typeorm'
-import { UserEntity } from '../models/user.entity'
+import { Account } from '../models/account.entity'
 import { AppDataSource } from '../config/database'
 
-export class UserRepository {
-    private repository: Repository<UserEntity>
+export class AccountRepository {
+    private repository: Repository<Account>
 
     constructor() {
-        this.repository = AppDataSource.getRepository(UserEntity);
+        this.repository = AppDataSource.getRepository(Account);
     }
 
-    async findByEmail(email: string): Promise<UserEntity | null> {
+    async findByEmail(email: string): Promise<Account | null> {
         return this.repository.findOneBy({ email });
     }
 
-    async findById(id: string): Promise<UserEntity | null> {
+    async findById(id: string): Promise<Account | null> {
         return this.repository.findOneBy({ id });
     }
 
-    async findByResetToken(token: string): Promise<UserEntity | null> {
+    async findByResetToken(token: string): Promise<Account | null> {
         return this.repository.findOneBy({ passwordResetToken: token });
     }
 
-    async create(userData: Partial<UserEntity>): Promise<UserEntity> {
+    async create(userData: Partial<Account>): Promise<Account> {
         const user = this.repository.create(userData);
         return this.repository.save(user);
     }
 
-    async update(id: string, data: Partial<UserEntity>): Promise<UserEntity | null> {
+    async update(id: string, data: Partial<Account>): Promise<Account | null> {
         const user = await this.findById(id);
         if (!user) return null;
 

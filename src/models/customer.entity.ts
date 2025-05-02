@@ -21,62 +21,63 @@ export enum CustomerState {
 
 @Entity('customers')
 export class Customer {
+
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column({ type: 'varchar', length: 255 })
-    fullName: string;
+    fullName!: string;
 
     @Column({ type: 'varchar', length: 100, unique: true })
-    identification: string;
+    identification!: string;
 
     @Column({ type: 'varchar', length: 150, unique: true })
-    email: string;
+    email!: string;
 
     @Column({ default: false })
-    isEmailVerified: boolean;
+    isEmailVerified!: boolean;
 
     @Column({ type: 'varchar', length: 20 })
-    cellphone: string;
+    cellphone!: string;
 
     @Column({ type: 'varchar', length: 100 })
-    country: string;
+    country!: string;
 
     @Column({ type: 'varchar', length: 100 })
-    city: string;
+    city!: string;
 
     @Column({ type: 'varchar', length: 255 })
-    address: string;
+    address!: string;
 
     @Column({ type: 'int', nullable: true })
-    age: number;
+    age!: number;
 
     @Column({ type: 'date', nullable: true })
-    birthdate: Date;
+    birthdate!: Date;
 
     @Column({ type: 'enum', enum: Gender, nullable: true })
-    gender: Gender;
+    gender!: Gender;
 
     @Column({ default: false })
-    isHabeasDataConfirm: boolean;
+    isHabeasDataConfirm!: boolean;
 
     @Column({ type: 'enum', enum: CustomerState, default: CustomerState.CREATED })
-    state: CustomerState;
+    state!: CustomerState;
 
     @Column({ type: 'jsonb', default: [] })
-    stateHistory: Array<{ state: CustomerState; changedAt: Date }>;
+    stateHistory!: Array<{ state: CustomerState; changedAt: Date }>;
 
     @Column({ default: true })
-    isActive: boolean;
+    isActive!: boolean;
 
     @Column({ type: 'float', default: 0 })
-    score: number;
+    score!: number;
 
     @Column({ type: 'text', array: true, default: [] })
-    interests: string[];
+    interests!: string[];
 
     @Column({ type: 'jsonb', nullable: true })
-    locations: {
+    locations!: {
         [key: string]: {
             label: string;
             address: string;
@@ -85,32 +86,32 @@ export class Customer {
     };
 
     @Column({ type: 'varchar', length: 10, nullable: true })
-    codeOtpAuthorization: string;
+    codeOtpAuthorization!: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
-    avatar: string;
+    avatar!: string;
 
     @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
-    totalSpent: string;
+    totalSpent!: string;
 
     @Column({ type: 'varchar', length: 100, nullable: true })
-    preferredPaymentMethod: string;
+    preferredPaymentMethod!: string;
 
     @Column({ type: 'text', array: true, default: [] })
-    dietaryRestrictions: string[];
+    dietaryRestrictions!: string[];
 
     @Column({ type: 'timestamp', nullable: true })
-    lastOrderDate: Date;
+    lastOrderDate!: Date;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    updatedAt!: Date;
 
-/*    @OneToOne(() => UserEntity, user => user.customer)
-    @JoinColumn()
-    user: UserEntity*/
+    /*    @OneToOne(() => UserEntity, user => user.customer)
+        @JoinColumn()
+        user!: UserEntity*/
 }
 
 // import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';

@@ -3,14 +3,15 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
+    DeleteDateColumn,
     UpdateDateColumn, OneToOne, JoinColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 
 export enum Gender {
-    MALE = 'male',
-    FEMALE = 'female',
-    OTHER = 'other',
+    MALE = 'M',
+    FEMALE = 'F',
+    OTHER = 'O',
 }
 
 export enum vendorState {
@@ -22,86 +23,90 @@ export enum vendorState {
 @Entity('vendors')
 export class Vendor {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
-
-    @Column({ type: 'varchar', length: 100 })
-    internalCode: string;
-
-    @Column({ type: 'varchar', length: 255 })
-    fullName: string;
+    id!: string;
 
     @Column({ type: 'varchar', length: 100, unique: true })
-    identification: string;
-
-    @Column({ type: 'varchar', length: 150, unique: true })
-    email: string;
-
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    password: string;
-
-    @Column({ default: false })
-    isEmailVerified: boolean;
-
-    @Column({ type: 'varchar', length: 20 })
-    cellphone: string;
-
-    @Column({ type: 'varchar', length: 100 })
-    country: string;
-
-    @Column({ type: 'varchar', length: 100 })
-    city: string;
+    internalCode!: string;
 
     @Column({ type: 'varchar', length: 255 })
-    address: string;
+    fullName!: string;
 
-    @Column({ type: 'int', nullable: true })
-    age: number;
+    @Column({ type: 'varchar', length: 100, unique: true })
+    identification!: string;
 
-    @Column({ type: 'enum', enum: Gender, nullable: true })
-    gender: Gender;
-
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    avatar: string;
+    @Column({ type: 'varchar', length: 150, unique: true })
+    email!: string;
 
     @Column({ default: false })
-    isHabeasDataConfirm: boolean;
+    isEmailVerified!: boolean;
+
+    @Column({ type: 'varchar', length: 20 })
+    cellphone!: string;
+
+    @Column({ type: 'varchar', length: 100 })
+    country!: string;
+
+    @Column({ type: 'varchar', length: 100 })
+    city!: string;
+
+    @Column({ type: 'varchar', length: 255 })
+    address!: string;
+
+    @Column({ type: 'int', nullable: true })
+    age!: number;
+
+    @Column({ type: 'enum', enum: Gender, nullable: true })
+    gender!: Gender;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    avatar!: string;
+
+    @Column({ default: false })
+    isHabeasDataConfirm!: boolean;
 
     @Column({ type: 'enum', enum: vendorState, default: vendorState.CREATED })
-    state: vendorState;
+    state!: vendorState;
 
     @Column({ type: 'jsonb', default: [] })
-    stateHistory: Array<{ state: vendorState; changedAt: Date }>;
+    stateHistory!: Array<{ state: vendorState; changedAt: Date, reason: string }>;
 
     @Column({ default: true })
-    isActive: boolean;
+    isActive!: boolean;
+
+    @Column({ default: false })
+    isReadyToSell!: boolean;
 
     @Column({ type: 'float', default: 0 })
-    rank: number;
+    rank!: number;
 
     @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
-    incomes: string;
+    incomes!: string;
 
     @Column({ type: 'jsonb', nullable: true })
-    bankAccount: {
+    bankAccount!: {
         number: string;
         entity: string;
         type: 'Ahorros' | 'Corriente' | string;
     };
 
     @Column({ type: 'varchar', length: 255, nullable: true })
-    commercialRegistry: string;
+    commercialRegistry!: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
-    rut: string;
+    rut!: string;
 
     @Column({ type: 'text', nullable: true })
-    bio: string;
+    bio!: string;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    updatedAt!: Date;
+
+    @DeleteDateColumn({ nullable: true })
+    deletedAt?: Date;
+
 
     // Relación con User
 /*    @OneToOne(() => UserEntity, user => user.vendor)

@@ -4,8 +4,6 @@ import { UserBO } from '../business/userBO';
 export class UserUseCases {
     private userBO: UserBO = new UserBO();
 
-
-//TODO: las respuestas y los request(req.body) deberian pasarse por la interface que ya tengo definida en /types
     createUser = async (req: Request, res: Response): Promise<void> => {
         try {
             const user = await this.userBO.createUser(req.body);
@@ -14,7 +12,7 @@ export class UserUseCases {
                 error: null,
                 status: 'success'
             });
-        } catch (error) {
+        } catch (error: any) {
             res.status(400).json({
                 data: null,
                 error: { message: error.message },
@@ -39,7 +37,7 @@ export class UserUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },
@@ -65,7 +63,7 @@ export class UserUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },
@@ -90,7 +88,7 @@ export class UserUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(400).json({
                 data: null,
                 error: { message: error.message },
@@ -115,7 +113,7 @@ export class UserUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },

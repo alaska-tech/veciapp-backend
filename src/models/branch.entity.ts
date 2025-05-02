@@ -23,10 +23,10 @@ export enum BusinessType {
 @Entity('branches')
 export class Branch {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  vendorId: string;
+  vendorId!: string;
 
   // Si tienes la relación con Vendor:
   // @ManyToOne(() => Seller)
@@ -34,82 +34,82 @@ export class Branch {
   // vendor: Seller;
 
   @Column({ type: 'varchar', length: 255 })
-  name: string;
+  name!: string;
 
   @Column({
     type: 'jsonb',
     nullable: true,
   })
-  location: {
+  location!: {
     lat: number;
     lng: number;
   };
 
   @Column({ type: 'varchar', length: 255 })
-  address: string;
+  address!: string;
 
   @Column({ type: 'varchar', length: 100 })
-  country: string;
+  country!: string;
 
   @Column({ type: 'varchar', length: 100 })
-  city: string;
+  city!: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
-  phone: string;
+  phone!: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
-  email: string;
+  email!: string;
 
   @Column({ type: 'float', default: 0 })
-  rank: number;
+  rank!: number;
 
   @Column({ type: 'enum', enum: BranchState, default: BranchState.ACTIVE })
-  state: BranchState;
+  state!: BranchState;
 
   @Column({ type: 'enum', enum: BusinessType, default: BusinessType.INDIVIDUAL })
-  businessType: BusinessType;
+  businessType!: BusinessType;
 
   @Column({ type: 'jsonb', nullable: true })
-  operatingHours: {
+  operatingHours!: {
     [day: string]: { open: string; close: string; isOpen: boolean };
   };
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  logo: string;
+  logo!: string;
 
   @Column({ type: 'float', default: 0 })
-  deliveryRadius: number;
+  deliveryRadius!: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  deliveryFee: string;
+  deliveryFee!: string;
 
   @Column({ type: 'int', default: 0 })
-  estimatedDeliveryTime: number;
+  estimatedDeliveryTime!: number;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  managerName: string;
+  managerName!: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
-  managerPhone: string;
+  managerPhone!: string;
 
   @Column({ type: 'text', array: true, default: [] })
-  images: string[];
+  images!: string[];
 
   @Column({ default: false })
-  isPickupAvailable: boolean;
+  isPickupAvailable!: boolean;
 
   @Column({ default: false })
-  isDeliveryAvailable: boolean;
+  isDeliveryAvailable!: boolean;
 
   @Column({ type: 'text', array: true, default: [] })
-  availablePaymentMethods: string[];
+  availablePaymentMethods!: string[];
 
   @Column({ type: 'text', nullable: true })
-  description: string;
+  description!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

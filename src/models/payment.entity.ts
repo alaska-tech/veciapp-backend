@@ -9,43 +9,43 @@ import {
 @Entity('payments')
 export class Payment {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  orderId: string;
+  orderId!: string;
 
   @Column({ type: 'uuid' })
-  customerId: string;
+  customerId!: string;
 
   @Column({ type: 'uuid' })
-  vendorId: string;
+  vendorId!: string;
 
   @Column({ type: 'enum', enum: ['debit_card', 'credit_card', 'cash', 'transfer'] })
-  type: 'debit_card' | 'credit_card' | 'cash' | 'transfer';
+  type!: 'debit_card' | 'credit_card' | 'cash' | 'transfer';
 
   @Column({ type: 'enum', enum: ['pending', 'completed', 'failed', 'refunded'] })
-  state: 'pending' | 'completed' | 'failed' | 'refunded';
+  state!: 'pending' | 'completed' | 'failed' | 'refunded';
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  amount: string;
+  amount!: string;
 
   @Column({ default: 'COP' })
-  currency: string;
+  currency!: string;
 
   @Column({ type: 'text' })
-  references: string;
+  references!: string;
 
   @Column({ nullable: true })
-  transactionId: string;
+  transactionId!: string;
 
   @Column({ nullable: true })
-  authorizationCode: string;
+  authorizationCode!: string;
 
   @Column({ nullable: true })
-  gatewayId: string;
+  gatewayId!: string;
 
   @Column({ nullable: true })
-  gatewayName: string;
+  gatewayName!: string;
 
   @Column({ type: 'json', nullable: true })
   rawResponse: any;
@@ -54,29 +54,29 @@ export class Payment {
   cardInfo: any; // Últimos 4 dígitos y otros datos relevantes
 
   @Column({ nullable: true })
-  cardBrand: string;
+  cardBrand!: string;
 
   @Column({ type: 'timestamp' })
-  paymentDate: Date;
+  paymentDate!: Date;
 
   @Column({ type: 'timestamp', nullable: true })
-  expiryDate: Date;
+  expiryDate!: Date;
 
   @Column({ nullable: true })
-  failureReason: string;
+  failureReason!: string;
 
   @Column({ nullable: true })
-  invoiceNumber: string;
+  invoiceNumber!: string;
 
   @Column({ nullable: true })
-  receiptUrl: string;
+  receiptUrl!: string;
 
   @Column({ type: 'json', nullable: true })
   metadata: any;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

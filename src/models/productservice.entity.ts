@@ -9,19 +9,19 @@ export enum ProductServiceState {
 @Entity('product_services')
 export class ProductService {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  vendorId: string;
+  vendorId!: string;
 
   @Column({ type: 'uuid' })
-  branchId: string;
+  branchId!: string;
 
   @Column({ type: 'uuid' })
-  categoryId: string;
+  categoryId!: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  serviceScheduling: {
+  serviceScheduling!: {
     professionalRequired: boolean;
     attentionLimitPerSlot: number;
     availableHours: {
@@ -30,68 +30,68 @@ export class ProductService {
   };
 
   @Column({ type: 'varchar', length: 50 })
-  type: string; // "product" o "service"
+  type!: string; // "product" o "service"
 
   @Column({ type: 'varchar', length: 255 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text' })
-  description: string;
+  description!: string;
 
   @Column({ type: 'varchar', length: 300 })
-  shortDescription: string;
+  shortDescription!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price: string;
+  price!: string;
 
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
-  discount: string;
+  discount!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  finalPrice: string;
+  finalPrice!: string;
 
   @Column({ type: 'varchar', length: 10 })
-  currency: string; // Ej: "COP", "USD"
+  currency!: string; // Ej: "COP", "USD"
 
   @Column({ type: 'text', array: true, default: [] })
-  images: string[];
+  images!: string[];
 
   @Column({ type: 'varchar', length: 255 })
-  mainImage: string;
+  mainImage!: string;
 
   @Column({ type: 'text', array: true, default: [] })
-  tags: string[];
+  tags!: string[];
 
   @Column({ type: 'float', default: 0 })
-  rank: number;
+  rank!: number;
 
   @Column({ type: 'enum', enum: ProductServiceState, default: ProductServiceState.AVAILABLE })
-  state: ProductServiceState;
+  state!: ProductServiceState;
 
   @Column({ type: 'int', default: 0 })
-  inventory: number;
+  inventory!: number;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  presentation: string;
+  presentation!: string;
 
   @Column({ type: 'text', array: true, default: [] })
-  ingredients: string[];
+  ingredients!: string[];
 
   @Column({ type: 'text', array: true, default: [] })
-  allergens: string[];
+  allergens!: string[];
 
   @Column({ default: false })
-  isHighlighted: boolean;
+  isHighlighted!: boolean;
 
   @Column({ default: false })
-  isBestseller: boolean;
+  isBestseller!: boolean;
 
   @Column({ default: false })
-  isNew: boolean;
+  isNew!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

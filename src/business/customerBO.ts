@@ -1,25 +1,25 @@
-import { CustomerEntity } from '../models/customer.entity';
+import { Customer } from '../models/customer.entity';
 import { Repository } from 'typeorm';
 import { CustomerRepository } from '../repositories/customer.repository';
 import { AppDataSource } from '../config/database';
 import {isValidEmail} from "../utils/validateEmails";
 import {SALT} from "../utils/constants";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import mailer from '../services/mailer'
 import {encrypt, decrypt} from "../utils/encrypt";
 import {generateOTP} from "../utils/codeGenerator";
 
 export class CustomerBO {
-    private repository: Repository<CustomerEntity>;
+    private repository: Repository<Customer>;
     private customerRepository: CustomerRepository
 
     constructor() {
-        this.repository = AppDataSource.getRepository(CustomerEntity);
+        this.repository = AppDataSource.getRepository(Customer);
         this.customerRepository = new CustomerRepository();
     }
 
     // Métodos de negocio
-    async createCustomer(customerData: Omit<CustomerEntity, 'id' | 'createdAt' | 'updatedAt'>): Promise<CustomerEntity> {
+    async createCustomer(customerData: Omit<Customer, 'id' | 'createdAt' | 'updatedAt'>): Promise<Customer> {
         // implementar validaciones de negocio
         if (!isValidEmail(customerData.email)) {
             throw new Error('Email inválido');
@@ -29,7 +29,7 @@ export class CustomerBO {
             throw new Error('La dirección de correo es requerida');
         }
 
-        if (!customerData.fullname) {
+        if (!customerData.fullName) {
             throw new Error('El nombre del usuario es requerido');
         }
 
@@ -55,7 +55,7 @@ export class CustomerBO {
                 email: response.email,
                 role: 'customer',
                 id: response.id,
-                fullname: response.fullname
+                fullname: response.fullName
             }
             const hash = encrypt(JSON.stringify(objectToHash))
 
@@ -65,7 +65,7 @@ export class CustomerBO {
             //enviar correo de bienvenida, para confirmar otp
             mailer({
                 email: response.email,
-                fullname: response.fullname,
+                fullname: response.fullName,
                 state: response.state,
                 title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
                 message: '',
@@ -84,28 +84,24 @@ export class CustomerBO {
         return response;
     }
 
-    async getCustomerById(id: string): Promise<CustomerEntity | null> {
+    async getCustomerById(id: string): Promise<Customer | null> {
         return this.repository.findOneBy({ id });
     }
 
-    async getAllCustomers(limit: number, page: number): Promise<[CustomerEntity[] | null, number]> {
+    async getAllCustomers(limit: number, page: number): Promise<[Customer[] | null, number]> {
         return this.repository.findAndCount({
             take: limit,
             skip: page
         });
     }
 
-    async updateCustomer(id: string, customerData: Partial<CustomerEntity>): Promise<CustomerEntity | null> {
+    async updateCustomer(id: string, customerData: Partial<Customer>): Promise<Customer | null> {
         const customer = await this.getCustomerById(id);
         if (!customer) return null;
 
         // Aplicar reglas de negocio para la actualización
         if (customerData.email && !isValidEmail(customerData.email)) {
             throw new Error('Email inválido');
-        }
-
-        if (customerData.password) {
-            customerData.password = await this.hashPassword(customerData.password);
         }
 
         // Actualizar y devolver el usuario
@@ -143,6 +139,6 @@ export class CustomerBO {
     }
 
     private async hashPassword(password: string): Promise<string> {
-        return await bcrypt.hash(password, SALT)
+        return await bcrypt.hash(password, SALT || 1234)
     }
 }
