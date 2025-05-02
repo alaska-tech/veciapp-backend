@@ -42,28 +42,28 @@ export class UserEntity {
         type: "boolean",
         default: false
     })
-    isActive: boolean;
+    isActive!: boolean;
 
     @Column({ type: 'varchar', nullable: true })
-    refreshToken: string | null;
+    refreshToken!: string | null;
 
     @Column({ type: 'varchar', nullable: true })
-    passwordResetToken: string | null;
+    passwordResetToken!: string | null;
 
     @Column({ type: 'varchar', nullable: true })
-    passwordResetExpires: Date | null;
+    passwordResetExpires!: Date | null;
 
     @Column({
         type: "boolean",
         default: false
     })
-    isVerified: boolean;
+    isVerified!: boolean;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    updatedAt!: Date;
 
     // Relaciones
 /*    @OneToOne(() => Customer, customer => customer.user)

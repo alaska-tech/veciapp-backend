@@ -9,7 +9,7 @@ const compileTemplate = async (templateName: string, context: any) => {
     const hbs = create()
     const templatePath = path.join(__dirname, '../utils/emailTemplates', `${templateName}.handlebars`)
     const templateContent = fs.readFileSync(templatePath, 'utf8')
-    const compiled = hbs.handlebars.compile(templateContent)
+    const compiled = hbs.handlebars.compile(templateContent, { noEscape: true })
     return compiled(context)
 }
 
@@ -25,7 +25,6 @@ const mailer = async (user: any) => {
     if (user.email) {
         const html = await compileTemplate(user.template, {
             fullname: user.fullname,
-            state: user.state,
             title: user.title,
             message: user.message,
             anchor: user.anchor,
