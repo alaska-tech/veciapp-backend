@@ -97,7 +97,7 @@ export class AuthBO {
         return true;
     }
 
-    async refreshToken(token: string): Promise<object> {
+    async refreshToken(token: string): Promise<{ refreshToken: string, accessToken: string  }> {
         try {
             // Verificar que el refresh token sea válido
             //const decoded = jwt.verify(token, this.refreshTokenSecret);

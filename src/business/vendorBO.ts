@@ -73,19 +73,18 @@ export class VendorBO {
         if (response && response?.id) {
             //Crear hash para enviar correo
             const objectToHash = {
-                email: response.email,
+                email: vendorData.email,
                 role: 'vendor',
                 id: response.id,
-                code: response.internalCode,
-                fullname: response.fullName
+                code: vendorData.internalCode,
+                fullname: vendorData.fullName
             }
             const hash = encrypt(JSON.stringify(objectToHash))
 
             //enviar correo de bienvenida, para confirmar y crear contrasena
             mailer({
-                email: response.email,
-                fullname: response.fullName,
-                state: response.state,
+                email: vendorData.email,
+                fullname: vendorData.fullName,
                 title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
                 message: 'Ahora presiona el botón para continnuar con el proceso de crear tu cuenta de Veci-proveedor',
                 anchor: VENDOR_VALIDATE_EMAIL_URL + '?h=' + hash,
@@ -96,7 +95,7 @@ export class VendorBO {
     }
 
     async getVendorById(id: string): Promise<Vendor | null> {
-        const vendorDetail: Vendor  = await this.repository.findOneBy({ id });
+        const vendorDetail: Vendor | null  = await this.repository.findOneBy({ id });
         if (!vendorDetail)throw new Error('El Veci-vendedor no existe');
 
         const vendorBranches = await this.branchRepository.find({

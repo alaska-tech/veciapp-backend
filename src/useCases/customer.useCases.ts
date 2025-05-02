@@ -38,7 +38,7 @@ export class CustomerUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },
@@ -109,7 +109,7 @@ export class CustomerUseCases {
                     status: 'error'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 data: null,
                 error: { message: error.message },
