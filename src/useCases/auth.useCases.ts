@@ -58,7 +58,7 @@ export class AuthUseCases {
     refresh = async (req: Request, res: Response):Promise<void> => {
         try {
             // Obtener token de cookie o del cuerpo de la petición
-            const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+            const refreshToken = req.body.refreshToken;
 
             if (!refreshToken) {
                 res.status(400).json(responseError({ message: "Refresh token es requerido" }));

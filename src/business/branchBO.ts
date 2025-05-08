@@ -1,239 +1,248 @@
-import {Vendor, vendorState} from '../models/vendor.entity';
-import {Account} from '../models/account.entity';
-import {Branch} from "../models/branch.entity";
+import {Branch, BranchState} from '../models/branch.entity';
+import {ProductService} from '../models/productservice.entity';
 import {Between, Repository} from 'typeorm';
 import {VendorRepository} from '../repositories/vendor.repository';
 import {AppDataSource} from '../config/database';
-import {isValidEmail} from "../utils/validateEmails";
-import mailer from '../services/mailer'
-import {decrypt, encrypt, hashPassword} from "../utils/encrypt";
-import {VENDOR_VALIDATE_EMAIL_URL} from "../utils/constants"
-import {
-    VendorCreateRequest,
-    VendorManageStatusRequest,
-    VendorStats, VendorUpdateRequest,
-    VendorValidateEmailRequestExtended
-} from "../types/vendor";
+import {BranchCreateRequest, BranchManageStatusRequest, BranchStats, BranchUpdateRequest, NearbyBranchesOptions, PaginatedNearbyResponse } from "../types/branch";
+
+import {PaginatedResponse} from "../types/serverResponse";
+import {Vendor} from "../models/vendor.entity";
 
 export class BranchBO {
-    private repository: Repository<Vendor>;
-    private accountRepository: Repository<Account>;
+    private vendorRepository: Repository<Vendor>
     private branchRepository: Repository<Branch>;
-    private vendorRepository: VendorRepository
+    private productServiceRepository: Repository<ProductService>;
 
     constructor() {
-        this.repository = AppDataSource.getRepository(Vendor);
-        this.vendorRepository = new VendorRepository();
-        this.accountRepository = AppDataSource.getRepository(Account);
+        this.vendorRepository = AppDataSource.getRepository(Vendor);
         this.branchRepository = AppDataSource.getRepository(Branch);
+        this.productServiceRepository = AppDataSource.getRepository(ProductService);
     }
 
     // Métodos de negocio
-    async createVendor(vendorData: VendorCreateRequest): Promise<Vendor> {
-
+    async createBranch(id: string, branchData: BranchCreateRequest): Promise<Branch> {
         // implementar validaciones de negocio
-        if (!vendorData.internalCode) {
-            throw new Error('El código interno del Veci-proveedor es requerido.');
+        if (!id) {
+            throw new Error('El id del Veci-proveedor es requerido.');
         }
 
-        if (!vendorData.email) {
-            throw new Error('El Email del Veci-proveedor es requerido.');
+        if (!branchData.name) {
+            throw new Error('El nombre de la tienda es requerido.');
         }
 
-        if (!isValidEmail(vendorData.email)) {
-            throw new Error('Email ingresado es inválido.');
+        if (branchData.rank) {
+            throw new Error('No está permitido cambiar el campo de calificacion de la tienda');
         }
 
-        if (!vendorData.fullName) {
-            throw new Error('El nombre del Veci-proveedor es requerido');
+        if (branchData.state) {
+            throw new Error('No está permitido cambiar el estado usando este servicio, use el servicio destinado para cambios de estado.');
         }
 
         // implementar reglas de negocio adicionales
-        const [existingVendor] = await Promise.all([this.vendorRepository.findByEmail(vendorData.email)])
-        if (existingVendor) {
-            throw new Error('El Veci-proveedor ya habia sido registrado antes.')
+        const existingVendor = await this.vendorRepository.findOneBy({id})
+        console.log(existingVendor )
+        if (!existingVendor) {
+            throw new Error('El Veci-proveedor asociado a esta tienda no existe.')
         }
 
         let stateHistory = [];
-        const newState: vendorState = vendorState.CREATED
+        const newState: BranchState = BranchState.CREATED
 
-        stateHistory.push({ state: newState, changedAt: new Date(), reason: "Veci-proveedor creado por primera vez"});
+        stateHistory.push({ state: newState, changedAt: new Date(), reason: "Tienda del Veci-proveedor creada por primera vez"});
+
+        //TODO: crear el punto de georeferenciacion en caso de que llegue el campo
 
         // @ts-ignore
-        const newUser = this.repository.create({
-            ...vendorData,
+        const newBranch = this.branchRepository.create({
+            ...branchData,
             country: "Colombia",
             city: "Santa Marta",
             stateHistory: stateHistory
         })
 
         // @ts-ignore
-        const response: Vendor = await this.repository.save(newUser);
-
-        if (response && response?.id) {
-            //Crear hash para enviar correo
-            const objectToHash = {
-                email: response.email,
-                role: 'vendor',
-                id: response.id,
-                code: response.internalCode,
-                fullname: response.fullName
-            }
-            const hash = encrypt(JSON.stringify(objectToHash))
-
-            //enviar correo de bienvenida, para confirmar y crear contrasena
-            mailer({
-                email: response.email,
-                fullname: response.fullName,
-                state: response.state,
-                title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
-                message: 'Ahora presiona el botón para continnuar con el proceso de crear tu cuenta de Veci-proveedor',
-                anchor: VENDOR_VALIDATE_EMAIL_URL + '?h=' + hash,
-                template: 'vendor-confirm-email'
-            })
-        }
-        return response;
+        return this.branchRepository.save(newBranch);
     }
 
-    async getVendorById(id: string): Promise<Vendor | null> {
-        const vendorDetail: Vendor  = await this.repository.findOneBy({ id });
-        if (!vendorDetail)throw new Error('El Veci-vendedor no existe');
+    async getBranchById(id: string): Promise<Branch | null> {
+        const branchDetail: Branch | null  = await this.branchRepository.findOneBy({ id });
+        if (!branchDetail)throw new Error('La tienda solicitada no existe');
 
-        const vendorBranches = await this.branchRepository.find({
+        const branchProducts = await this.productServiceRepository.find({
             where: {
-                vendorId: id
+                branchId: id
             }
         });
-        Object.assign(vendorDetail, {branches: vendorBranches });
-        return vendorDetail
+        Object.assign(branchDetail, {productServices: branchProducts });
+        return branchDetail
     }
 
-    async getVendorStats(startDate?: Date, endDate?: Date): Promise<VendorStats> {
+    async getBranchStats(startDate?: Date, endDate?: Date): Promise<BranchStats> {
         let whereCondition: any = {};
 
         if (startDate && endDate) {
             whereCondition.createdAt = Between(startDate, endDate);
         }
 
-        const totalVendors = await this.repository.count({
+        const totalBranches = await this.branchRepository.count({
             where: whereCondition
         });
 
-        const activeVendors = await this.repository.count({
+        const inactiveBranches = await this.branchRepository.count({
             where: {
                 ...whereCondition,
-                isActive: true
+                state: "inactive"
             }
         });
 
-        const verifiedPending = await this.repository.count({
-            where: {
-                ...whereCondition,
-                isEmailVerified: false
-            }
-        });
-
-        const inactiveVendors = totalVendors - activeVendors;
+        const activeVendors = totalBranches - inactiveBranches;
 
         return {
-            total_vendors: totalVendors,
-            active_vendors: activeVendors,
-            inactive_vendors: inactiveVendors,
-            verified_pending: verifiedPending
+            total_branches: totalBranches,
+            active_branches: activeVendors,
+            inactive_branches: inactiveBranches,
         };
     }
 
-    async getAllVendors(limit: number, page: number): Promise<Vendor[]> {
-        return (limit && page) ? this.repository.find({
+    async getAllBranches(limit: number, page: number): Promise<PaginatedResponse<Branch>> {
+        const [data, total] = (limit && page) ? await this.branchRepository.findAndCount({
             take: limit,
-            skip: page
-        }) : this.repository.find();
+            skip: (page - 1) * limit,
+            order: {
+                createdAt: 'DESC'
+            }
+        }) : await this.branchRepository.findAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage: Math.ceil(total / limit)
+            }
+        };
     }
 
-    async updateVendor(id: string, vendorData: VendorUpdateRequest): Promise<Vendor | null> {
-        const vendor = await this.getVendorById(id);
-        if (!vendor)throw new Error('El Veci-vendedor no existe');
+    async updateBranch(id: string, branchData: BranchUpdateRequest): Promise<Branch | null> {
+        const branch: Branch | null = await this.branchRepository.findOneBy({ id });
+        if (!branch)throw new Error('La tienda no existe');
 
         // Aplicar reglas de negocio para la actualización
-        if (vendorData.isActive === false) {
-            throw new Error('El Veci-proveedor se encuentra inactivo y no se permiten operaciones');
+        if (branchData.vendorId) {
+            throw new Error('No está permitido cambiar el dueño de la tienda');
         }
 
-        if (vendorData.email) {
-            throw new Error('No está permitido cambiar el email del Veci-proveedor');
+        if (branchData.rank) {
+            throw new Error('No está permitido cambiar el campo de calificacion de la tienda');
         }
 
-        if (vendorData.internalCode) {
-            throw new Error('No está permitido cambiar el código interno del Veci-proveedor');
-        }
-
-        if (vendorData.state) {
-            throw new Error('No está permitido cambiar el estado usando este servicio, use el servicio servicio destinado para cambios de estado.');
+        if (branchData.state) {
+            throw new Error('No está permitido cambiar el estado usando este servicio, use el servicio destinado para cambios de estado.');
         }
 
         // Actualizar y devolver el usuario
-        Object.assign(vendor, vendorData);
-        return this.repository.save(vendor);
+        Object.assign(branch, branchData);
+        return this.branchRepository.save(branch);
     }
 
-    async changeStatusVendor(id: string, vendorData: VendorManageStatusRequest): Promise<Vendor | null> {
-        const vendor = await this.getVendorById(id);
-        if (!vendor)throw new Error('El Veci-vendedor no existe');
+    async changeStatusBranch(id: string, branchData: BranchManageStatusRequest): Promise<Branch | null> {
+        const branch: Branch | null = await this.branchRepository.findOneBy({ id });
+        if (!branch)throw new Error('La tienda no existe');
 
         // Aplicar reglas de negocio para la actualización
-        if (vendorData.changeTo === vendorState.CREATED || vendorData.changeTo === vendorState.VERIFIED) {
-            throw new Error('El estado que desea cambiar no es permitido mediante este servicio. Solo puede cambiar estados de gestion del Veci-proveedor');
+        if (branchData.changeTo === BranchState.CREATED || branchData.changeTo === BranchState.VERIFIED) {
+            throw new Error('El estado que desea cambiar no es permitido mediante este servicio. Solo puede cambiar estados de gestion de la tienda');
         }
 
-        const newState: vendorState = vendorData.changeTo
-        vendor.stateHistory.push({ state: newState, changedAt: new Date(), reason: vendorData.reason || "El estado del Veci-proveedor se ha cambiado por el admin"});
+        const newState: BranchState = branchData.changeTo
+        branch.stateHistory.push({ state: newState, changedAt: new Date(), reason: branchData.reason || "El estado de la tienda se ha cambiado por el admin"});
 
         // Actualizar y devolver el usuario
-        Object.assign(vendor, {state: vendorData.changeTo});
-        return this.repository.save(vendor);
+        Object.assign(branch, {state: branchData.changeTo});
+        return this.branchRepository.save(branch);
     }
 
-    async deleteVendor(id: string): Promise<boolean> {
-        const result = await this.repository.softDelete(id);
+    async deleteBranch(id: string): Promise<boolean> {
+        const result = await this.branchRepository.softDelete(id);
         return result.affected ? result.affected > 0 : false;
     }
 
-    async validateEmail(req: VendorValidateEmailRequestExtended): Promise<object | null> {
-        const hashDecrypt: string = decrypt(req.body.hash)
-        const dataConfirm = JSON.parse(hashDecrypt)
+    async getNearbyBranches(options: NearbyBranchesOptions): Promise<PaginatedNearbyResponse> {
+        const {
+            latitude,
+            longitude,
+            maxDistance = 5000, // Por defecto 5 km
+            limit = 10,
+            page = 1,
+        } = options;
 
-        if (dataConfirm && dataConfirm.email) {
-            const pendingVendor = await this.vendorRepository.findByEmail(dataConfirm.email)
-            if (!pendingVendor) throw new Error('El Veci-proveedor solicitado no existe');
-            if (pendingVendor?.isEmailVerified ) throw new Error('La Url ya expiró');
-            if (dataConfirm.code !== req.body.code) throw new Error('El código Veci-proveedor que ha ingresado no es correcto!.');
+        // Validar que los parámetros necesarios estén presentes
+        if (!latitude || !longitude) {
+            throw new Error('Latitude and longitude are required');
+        }
 
-            //Crear el historico de estados
-            const newState: vendorState = vendorState.VERIFIED
-            pendingVendor.stateHistory.push({ state: newState, changedAt: new Date(), reason: "Veci-proveedor ha verificado su correo y ha autorizado crear una cuenta."});
+        // Crear el punto GeoJSON
+        const point = {
+            type: 'Point',
+            coordinates: [Number(longitude), Number(latitude)],
+        };
 
-            // Actualizar y devolver el usuario
-            Object.assign(pendingVendor, {isEmailVerified: true, updatedAt: new Date(), state: newState});
-            const updateResponse = await this.repository.save(pendingVendor);
+        // Calcular el número de elementos a omitir
+        const skip = (Number(page) - 1) * Number(limit);
 
-            if (!updateResponse) throw new Error('No fue posible verificar al Veci-proveedor solicitado');
+        // Construir la consulta
+        const query = this.branchRepository
+            .createQueryBuilder('branch')
+            .addSelect(
+                `ST_Distance(
+                branch.location,
+                ST_SetSRID(ST_GeomFromGeoJSON(:point), 4326)
+            )`,
+                'distance' // Solo un alias aquí
+            )
+            .where(
+                `ST_DWithin(
+                branch.location,
+                ST_SetSRID(ST_GeomFromGeoJSON(:point), 4326),
+                :maxDistance
+            )`
+            )
+            .andWhere('branch.isActive = :isActive', { isActive: true }) // Usar booleano en lugar de string
+            .setParameter('point', JSON.stringify(point))
+            .setParameter('maxDistance', maxDistance)
+            .orderBy('distance', 'ASC') // Ordenar por distancia ascendente
+            .take(Number(limit)) // Número de resultados por página
+            .skip(Number(skip)); // Saltar resultados según la página
 
-            //Crear la cuenta de este vendedor
-            const encrypPassword = await hashPassword(req.body.pass)
-            // @ts-ignore
-            const newAccount = this.accountRepository.create({ fullName: pendingVendor.fullName, email: pendingVendor.email, password: encrypPassword , foreignPersonId: pendingVendor.id, foreignPersonType: "vendor", role: "vendor" })
-            const response = await this.accountRepository.save(newAccount);
+        try {
+            // Ejecutar la consulta
+            const [results, total] = await query.getManyAndCount();
+            console.log(query.getRawAndEntities())
 
-            if (response) {
-                console.log("La cuenta del Veci-proveedor ha sido creada con exito!")
-            }
+            // Mapear los resultados para incluir la distancia
+            const data = results.map((entity, index) => {
+console.log(query.expressionMap.selects)
+                const raw = query.expressionMap.selects.find((select) => select.selection === 'distance');
+                return {
+                    ...entity,
+                    distance: parseFloat(raw ? raw.selection : '0'), // Distancia en metros
+                };
+            });
 
+            // Devolver la respuesta paginada
             return {
-                isEmailVerified: true,
-                email: updateResponse.email
-            }
-        } else {
-            throw new Error('La Url proporsionada no es válida');
+                data,
+                meta: {
+                    total,
+                    page: Number(page),
+                    limit: Number(limit),
+                    lastPage: Math.ceil(total / Number(limit)),
+                },
+            };
+        } catch (error) {
+            console.error('Error fetching nearby branches:', error);
+            throw new Error('Failed to fetch nearby branches');
         }
     }
 }

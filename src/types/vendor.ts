@@ -68,7 +68,7 @@ export interface VendorStatsRequestExtended extends Request {
 }
 
 export interface VendorPaginationRequestExtended extends Request {
-    params: {
+    query: {
         limit: string;
         page: string;
     };

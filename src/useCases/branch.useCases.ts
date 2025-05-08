@@ -11,7 +11,7 @@ import {
     BranchStatsRequestExtended,
     BranchCreateResponse,
     BranchStats,
-    BranchManageStatusRequestExtended
+    BranchManageStatusRequestExtended, NearbyBranchPaginationRequestExtended
 } from '../types/branch';
 import {ApiResponse} from '../types/serverResponse';
 import {responseError, responseOk} from "../utils/standardResponseServer";
@@ -21,7 +21,7 @@ export class BranchUseCases {
 
     createBranch = async (req: BranchCreateRequestExtended, res: Response<ApiResponse<BranchCreateResponse>>): Promise<void> => {
         try {
-            const branch = await this.branchBO.createBranch(req.body);
+            const branch = await this.branchBO.createBranch(req.params.vendorId ,req.body);
             res.status(201).json(responseOk({ id: branch.id, message: 'Se ha creado una nueva tienda para el Veci-proveedor!'}));
         } catch (error: any) {
             res.status(400).json(responseError({ message: error.message }));
@@ -30,7 +30,16 @@ export class BranchUseCases {
 
     getAllBranches = async (req: BranchPaginationRequestExtended, res: Response<ApiResponse<any>>): Promise<void> => {
         try {
-            const branches = await this.branchBO.getAllBranch(Number(req.params.limit), Number(req.params.page));
+            const branches = await this.branchBO.getAllBranches(Number(req.query.limit), Number(req.query.page));
+            res.status(200).json(responseOk(branches));
+        } catch (error: any) {
+            res.status(500).json(responseError({ message: error.message }  as any));
+        }
+    }
+
+    getNearbyBranches = async (req: NearbyBranchPaginationRequestExtended, res: Response<ApiResponse<any>>): Promise<void> => {
+        try {
+            const branches = await this.branchBO.getNearbyBranches(req.query);
             res.status(200).json(responseOk(branches));
         } catch (error: any) {
             res.status(500).json(responseError({ message: error.message }  as any));
@@ -132,6 +141,4 @@ export class BranchUseCases {
             res.status(500).json(responseError({ message: error.message }));
         }
     }
-
-    //TODO: devolver tiendas cercanas a una ubicacion
 }

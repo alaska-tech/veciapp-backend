@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
@@ -11,6 +12,9 @@ import { Point } from "geojson";
 
 
 export enum BranchState {
+  CREATED = 'created',
+  VERIFIED = 'verified',
+  SUSPENDED = 'suspended',
   ACTIVE = 'active',
   TEMP_CLOSED = 'temporarily_closed',
   MAINTENANCE = 'maintenance',
@@ -39,13 +43,16 @@ export class Branch {
   name!: string;
 
   @Column({
-    type: 'jsonb',
-    nullable: true,
+    type: 'geography',
+    spatialFeatureType: 'Point',
+    srid: 4326,
+    nullable: true
   })
-  location!: {
-    lat: number;
-    lng: number;
-  };
+  @Index({ spatial: true })
+  location!: Point;
+
+  @Column({ type: 'float', default: 0 })
+  distance!: number;
 
   @Column({ type: 'varchar', length: 255 })
   address!: string;
@@ -59,8 +66,14 @@ export class Branch {
   @Column({ type: 'float', default: 0 })
   rank!: number;
 
-  @Column({ type: 'enum', enum: BranchState, default: BranchState.ACTIVE })
+  @Column({ default: false })
+  isActive!: boolean;
+
+  @Column({ type: 'enum', enum: BranchState, default: BranchState.CREATED })
   state!: BranchState;
+
+  @Column({ type: 'jsonb', default: [] })
+  stateHistory!: Array<{ state: BranchState; changedAt: Date, reason: string }>;
 
   @Column({ type: 'enum', enum: BusinessType, default: BusinessType.INDIVIDUAL })
   businessType!: BusinessType;

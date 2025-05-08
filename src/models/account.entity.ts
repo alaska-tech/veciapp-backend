@@ -52,7 +52,7 @@ export class Account {
   @Column({ type: 'timestamp', nullable: true })
   passwordResetExpires!: Date;
 
-  @Column({default: false })
+  @Column({default: false, nullable: true })
   hasPasswordChange!: boolean;
 
   @Column({ type: 'timestamp', nullable: true })

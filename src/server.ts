@@ -6,7 +6,7 @@ import {PORT} from './utils/constants'
 initializeDatabase()
     .then(() => {
       // Iniciar servidor
-      app.listen(PORT || 3000, () => {
+      app.listen(PORT || 3001, () => {
         console.log(`Servidor veciapp corriendo en puerto ${PORT}`);
       });
     })

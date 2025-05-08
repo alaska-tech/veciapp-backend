@@ -2,6 +2,7 @@ import {Parameter} from "../models/parameter.entity";
 import {Repository} from "typeorm";
 import {AppDataSource} from "../config/database";
 import {CreateParameterRequestExtended} from "../types/parameters";
+import {PaginatedResponse} from "../types/serverResponse";
 
 export class ParameterBO {
     private repository: Repository<Parameter>;
@@ -42,11 +43,25 @@ export class ParameterBO {
         return this.repository.findOneBy({ name });
     }
 
-    async getAllParameters(limit: number, page: number): Promise<[Parameter[] | null, number]> {
-        return this.repository.findAndCount({
+    async getAllParameters(limit: number, page: number): Promise<PaginatedResponse<Parameter>> {
+        console.log(limit, page)
+        const [data, total] = (limit && page) ? await this.repository.findAndCount({
             take: limit,
-            skip: page
-        });
+            skip: (page - 1) * limit,
+            order: {
+                createdAt: 'DESC'
+            }
+        }) : await this.repository.findAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage: Math.ceil(total / limit)
+            }
+        };
     }
 
     async createParameter(parameterData: CreateParameterRequestExtended ): Promise<Parameter> {

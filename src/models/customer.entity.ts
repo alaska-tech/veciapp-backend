@@ -5,7 +5,6 @@ import {
     CreateDateColumn,
     UpdateDateColumn, OneToOne, JoinColumn,
 } from 'typeorm';
-import {UserEntity} from "./user.entity";
 
 export enum Gender {
     MALE = 'male',

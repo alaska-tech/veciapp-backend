@@ -11,7 +11,7 @@ router.get('/get-details/:id', verifyToken, vendorUseCases.getVendorById);
 router.get('/stats', verifyToken, vendorUseCases.getStats);
 router.put('/edit/:id', verifyToken, vendorUseCases.updateVendor);
 router.put('/manage-status/:id', verifyToken, vendorUseCases.manageStatus);
-router.post('/validate-email', verifyToken, vendorUseCases.validateEmail);
+router.post('/validate-email', vendorUseCases.validateEmail);
 router.delete('/delete/:id', verifyToken, vendorUseCases.deleteVendor);
 
 export default router

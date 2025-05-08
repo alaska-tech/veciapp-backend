@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import {BranchState} from "../models/branch.entity";
+import {Branch, BranchState} from "../models/branch.entity";
 import { Point } from 'typeorm';
 
 // Interfaces para Request
@@ -17,6 +17,8 @@ export interface BranchCreateRequest {
     images?: string[];
     availablePaymentMethods?: string[];
     description?: string;
+    rank?: number;
+    state?: BranchState;
 }
 
 export interface BranchManageStatusRequest {
@@ -31,6 +33,9 @@ export interface BranchUpdateRequest extends Partial<BranchCreateRequest> {}
 
 export interface BranchCreateRequestExtended extends Request {
     body: BranchCreateRequest;
+    params: {
+        vendorId: string;
+    };
 }
 
 export interface BranchUpdateRequestExtended extends Request {
@@ -61,9 +66,19 @@ export interface BranchStatsRequestExtended extends Request {
 }
 
 export interface BranchPaginationRequestExtended extends Request {
-    params: {
+    query: {
         limit: string;
         page: string;
+    };
+}
+
+export interface NearbyBranchPaginationRequestExtended extends Request {
+    query: {
+        latitude: string;
+        longitude: string;
+        maxDistance?: string;
+        limit?: string;
+        page?: string;
     };
 }
 
@@ -99,19 +114,33 @@ export interface BranchResponse {
     availablePaymentMethods?: string[];
     description?: string;
     message?: string
-}
-
-export interface BranchPaginatedResponse {
-    items: BranchResponse[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
+    productServices?: string
 }
 
 export interface BranchStats {
     total_branches: number;
     active_branches: number;
     inactive_branches: number;
-    verified_branches: number;
+}
+
+export interface NearbyBranchesOptions {
+    latitude: string;
+    longitude: string;
+    maxDistance?: string;
+    limit?: string;
+    page?: string;
+}
+
+export interface NearbyBranch extends Branch {
+    distance: number; // distancia en metros
+}
+
+export interface PaginatedNearbyResponse {
+    data: NearbyBranch[];
+    meta: {
+        total: number | string;
+        page: number | string;
+        limit: number | string;
+        lastPage: number | string;
+    };
 }

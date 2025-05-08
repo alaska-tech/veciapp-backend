@@ -12,5 +12,6 @@ router.get('/stats', verifyToken, branchUseCases.getStats);
 router.put('/edit/:id', verifyToken, branchUseCases.updateBranch);
 router.put('/manage-status/:id', verifyToken, branchUseCases.manageStatus);
 router.delete('/delete/:id', verifyToken, branchUseCases.deleteBranch);
+router.get('/get-nearby-branches', verifyToken, branchUseCases.getNearbyBranches);
 
 export default router

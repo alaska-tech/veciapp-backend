@@ -15,6 +15,10 @@ import {
     VendorValidateEmailRequestExtended
 } from "../types/vendor";
 
+import {
+    PaginatedResponse
+} from "../types/serverResponse";
+
 export class VendorBO {
     private repository: Repository<Vendor>;
     private accountRepository: Repository<Account>;
@@ -142,11 +146,25 @@ export class VendorBO {
         };
     }
 
-    async getAllVendors(limit: number, page: number): Promise<Vendor[]> {
-        return (limit && page) ? this.repository.find({
+    async getAllVendors(limit: number, page: number): Promise<PaginatedResponse<Vendor>> {
+        const [data, total] = (limit && page) ? await this.repository.findAndCount({
             take: limit,
-            skip: page
-        }) : this.repository.find();
+            skip: (page - 1) * limit,
+            order: {
+                createdAt: 'DESC'
+            }
+        }) : await this.repository.findAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage: Math.ceil(total / limit)
+            }
+        };
+
     }
 
     async updateVendor(id: string, vendorData: VendorUpdateRequest): Promise<Vendor | null> {

@@ -15,7 +15,7 @@ export interface GetParameterByNameRequestExtended extends Request {
 }
 
 export interface GetAllParameterRequestExtended extends Request {
-    params: {
+    query: {
         limit?: string,
         page?: string
     }
@@ -25,6 +25,7 @@ export interface CreateParameterRequestExtended extends Request {
     body: {
         displayName: string;
         name: string;
+        data?: string;
         description: string;
         value: string;
         type: 'string' | 'number' | 'boolean' | 'json';
