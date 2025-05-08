@@ -68,7 +68,7 @@ export interface VendorStatsRequestExtended extends Request {
 }
 
 export interface VendorPaginationRequestExtended extends Request {
-    params: {
+    query: {
         limit: string;
         page: string;
     };
@@ -83,15 +83,6 @@ export interface VendorValidateEmailRequestExtended extends Request {
 }
 
 // Interfaces para Response
-
-export interface ApiResponse<T> {
-    data: T | null;
-    error: {
-        code: string;
-        message: string;
-    } | null;
-    status: string;
-}
 
 export interface VendorCreateResponse {
     id?: string;

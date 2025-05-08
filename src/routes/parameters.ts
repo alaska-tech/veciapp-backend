@@ -5,12 +5,12 @@ import verifyToken from '../middlewares/validateToken';
 const router = express.Router();
 const parameterUseCases = new ParameterUseCases();
 
-router.post('/', parameterUseCases.createParameter);
-router.get('/list', parameterUseCases.getAllParameters);
-router.get('/:id', parameterUseCases.getParameterById);
-router.get('/get-by-name/:name', parameterUseCases.getParameterByName);
-router.patch('/toggle-status/:id', parameterUseCases.toggleParameterStatus);
-router.put('/:id', parameterUseCases.updateParameter);
-router.delete('/:id', parameterUseCases.deleteParameter);
+router.post('/', verifyToken, parameterUseCases.createParameter);
+router.get('/list', verifyToken, parameterUseCases.getAllParameters);
+router.get('/:id', verifyToken, parameterUseCases.getParameterById);
+router.get('/get-by-name/:name', verifyToken, parameterUseCases.getParameterByName);
+router.patch('/toggle-status/:id', verifyToken, parameterUseCases.toggleParameterStatus);
+router.put('/:id', verifyToken, parameterUseCases.updateParameter);
+router.delete('/:id', verifyToken, parameterUseCases.deleteParameter);
 
 export default router;

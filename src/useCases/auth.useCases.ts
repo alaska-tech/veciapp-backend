@@ -58,7 +58,7 @@ export class AuthUseCases {
     refresh = async (req: Request, res: Response):Promise<void> => {
         try {
             // Obtener token de cookie o del cuerpo de la petición
-            const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+            const refreshToken = req.body.refreshToken;
 
             if (!refreshToken) {
                 res.status(400).json(responseError({ message: "Refresh token es requerido" }));
@@ -100,7 +100,6 @@ export class AuthUseCases {
 
             res.status(200).json(responseOk({
                 message: "Se ha enviado un email con instrucciones para restablecer la contraseña",
-                //resetToken // no retornar esto en producción, aca solo en pruebas
             }));
         } catch (error: any) {
             res.status(400).json(responseError({ message: error.message }));

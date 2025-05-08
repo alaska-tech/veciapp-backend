@@ -68,16 +68,14 @@ export class ParameterUseCases {
     }
   }
 
-  getAllParameters = async (req: GetAllParameterRequestExtended, res: Response<ApiResponse<ParameterResponse>>): Promise<void> => {
+  getAllParameters = async (req: GetAllParameterRequestExtended, res: Response<ApiResponse<any>>): Promise<void> => {
     try {
-      const { limit = 10, page = 1 } = req.params;
-      const [parameters, count] = await this.parameterBO.getAllParameters(
+      const { limit, page } = req.query;
+      const parameters = await this.parameterBO.getAllParameters(
         Number(limit),
         Number(page)
       );
-      const parameterData = parameters as ParametersData[]
-      const parameter: ParameterResponse = { parameters: parameterData, count: count }
-      res.status(200).json(responseOk(parameter));
+      res.status(200).json(responseOk(parameters));
     } catch (error: any) {
       res.status(400).json(responseError({ message: error.message } as any))
     }

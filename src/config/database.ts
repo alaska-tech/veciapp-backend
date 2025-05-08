@@ -10,7 +10,6 @@ import {
     DB_NAME
 } from '../utils/constants'
 
-import { UserEntity} from "../models/user.entity";
 import { Customer} from "../models/customer.entity";
 import { Vendor} from "../models/vendor.entity";
 import { Branch} from "../models/branch.entity";
@@ -24,33 +23,30 @@ import { ShoppingCart} from "../models/shoppingcart.entity";
 import { Testimonial} from "../models/testimonial.entity";
 import { Wishlist} from "../models/wishlist.entity";
 
-const isProduction = NODE_ENV === 'production';
 const baseConfig: DataSourceOptions = {
     type: "postgres",
-    url: DB_HOST || "",
-    //port: parseInt(DB_PORT || ""),
-    /*username: DB_USER || "",
-    password: DB_PASSWORD || "",
-    database: DB_NAME || "",*/
+    host: DB_HOST || "149.28.199.50",
+    port: parseInt(DB_PORT || "5432"),
+    username: DB_USER || "postgres",
+    password: DB_PASSWORD || "ELjyqZFtL8G7goDEYo0Ek5TnE8G2AnLp",
+    database: DB_NAME || "deliverydb",
+
+    synchronize: NODE_ENV !== "production",
+    logging: NODE_ENV !== "production",
 
     // Configuración de modelos
     entities: [
-        UserEntity, Customer, Vendor, Branch, Account, Category, Order, Parameter, Payment, ProductService, ShoppingCart, Testimonial, Wishlist
+        Customer, Vendor, Branch, Account, Category, Order, Parameter, Payment, ProductService, ShoppingCart, Testimonial, Wishlist
     ],
 
-    // Ubicación de migraciones (cuando las tengamos)
-    migrations: [path.join(__dirname, '../migrations/**/*.ts')],
+    migrations: [path.join(__dirname, "../migration/**/*.{js,ts}")],
+    subscribers: [path.join(__dirname, "../subscriber/**/*.{js,ts}")],
 
-    // Configuraciones adicionales
-    synchronize: false, //!isProduction         // Cuidado en producción
-    logging: ['error'],
     // Configuración para PostGIS
-
     extra: {
-        postgisExtension: true,
-        ssl: {
-            rejectUnauthorized: false, // Necesario para Xata
-        },
+        ssl: false,
+        // Esto asegura que la extensión PostGIS esté habilitada
+        options: `-c search_path=public,postgis`
     }
 };
 

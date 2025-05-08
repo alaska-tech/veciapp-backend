@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs'
 import mailer from '../services/mailer'
 import {encrypt, decrypt} from "../utils/encrypt";
 import {generateOTP} from "../utils/codeGenerator";
+import {PaginatedResponse} from "../types/serverResponse";
 
 export class CustomerBO {
     private repository: Repository<Customer>;
@@ -88,11 +89,24 @@ export class CustomerBO {
         return this.repository.findOneBy({ id });
     }
 
-    async getAllCustomers(limit: number, page: number): Promise<[Customer[] | null, number]> {
-        return this.repository.findAndCount({
+    async getAllCustomers(limit: number, page: number): Promise<PaginatedResponse<Customer>> {
+        const [data, total] = (limit && page) ? await this.repository.findAndCount({
             take: limit,
-            skip: page
-        });
+            skip: (page - 1) * limit,
+            order: {
+                createdAt: 'DESC'
+            }
+        }) : await this.repository.findAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage: Math.ceil(total / limit)
+            }
+        };
     }
 
     async updateCustomer(id: string, customerData: Partial<Customer>): Promise<Customer | null> {
