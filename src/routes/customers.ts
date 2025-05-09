@@ -6,10 +6,11 @@ const router = express.Router()
 const customerUseCases = new CustomerUseCases()
 
 router.post('/', customerUseCases.createCustomer);
-router.get('/', verifyToken, customerUseCases.getAllCustomers);
-router.get('/:id', verifyToken, customerUseCases.getCustomerById);
-router.put('/:id', verifyToken, customerUseCases.updateCustomer);
-router.delete('/:id', customerUseCases.deleteCustomer);
-router.get('/validate-email/:hash', customerUseCases.validateEmail);
+router.get('/list', verifyToken, customerUseCases.getAllCustomers);
+router.get('/get-details/:id', verifyToken, customerUseCases.getCustomerById);
+router.get('/stats', verifyToken, customerUseCases.getStats);
+router.put('/edit/:id', verifyToken, customerUseCases.updateCustomer);
+router.put('/manage-status/:id', verifyToken, customerUseCases.manageStatus);
+router.post('/validate-email', customerUseCases.validateEmail);
 
 export default router

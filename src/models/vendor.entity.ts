@@ -6,7 +6,6 @@ import {
     DeleteDateColumn,
     UpdateDateColumn, OneToOne, JoinColumn,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
 
 export enum Gender {
     MALE = 'M',
@@ -94,6 +93,7 @@ export class Vendor {
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     rut!: string;
+
 
     @Column({ type: 'text', nullable: true })
     bio!: string;

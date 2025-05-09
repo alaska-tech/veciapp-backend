@@ -1,7 +1,6 @@
 import { Response } from 'express';
 import { VendorBO } from '../business/vendorBO';
 import {
-    ApiResponse,
     VendorCreateRequestExtended,
     VendorGetRequestExtended,
     VendorPaginationRequestExtended,
@@ -12,6 +11,7 @@ import {
     VendorStatsRequestExtended,
     VendorStats, VendorManageStatusRequestExtended
 } from '../types/vendor';
+import {ApiResponse} from '../types/serverResponse';
 import {responseError, responseOk} from "../utils/standardResponseServer";
 
 export class VendorUseCases {
@@ -85,7 +85,7 @@ export class VendorUseCases {
 
     getAllVendors = async (req: VendorPaginationRequestExtended, res: Response<ApiResponse<any>>): Promise<void> => {
         try {
-            const vendors = await this.vendorBO.getAllVendors(Number(req.params.limit), Number(req.params.page));
+            const vendors = await this.vendorBO.getAllVendors(Number(req.query.limit), Number(req.query.page));
             res.status(200).json(responseOk(vendors));
         } catch (error: any) {
             res.status(500).json(responseError({ message: error.message }  as any));

@@ -7,12 +7,17 @@ import {AppDataSource} from '../config/database';
 import {isValidEmail} from "../utils/validateEmails";
 import mailer from '../services/mailer'
 import {decrypt, encrypt, hashPassword} from "../utils/encrypt";
+import {VENDOR_VALIDATE_EMAIL_URL} from "../utils/constants"
 import {
     VendorCreateRequest,
     VendorManageStatusRequest,
     VendorStats, VendorUpdateRequest,
     VendorValidateEmailRequestExtended
 } from "../types/vendor";
+
+import {
+    PaginatedResponse
+} from "../types/serverResponse";
 
 export class VendorBO {
     private repository: Repository<Vendor>;
@@ -69,8 +74,6 @@ export class VendorBO {
         // @ts-ignore
         const response: Vendor = await this.repository.save(newUser);
 
-console.log("el response para crear", response)
-
         if (response && response?.id) {
             //Crear hash para enviar correo
             const objectToHash = {
@@ -88,11 +91,10 @@ console.log("el response para crear", response)
                 fullname: vendorData.fullName,
                 title: 'Ya eres parte de VeciApp, falta poco para terminar tu registro',
                 message: 'Ahora presiona el botón para continnuar con el proceso de crear tu cuenta de Veci-proveedor',
-                anchor: 'http://localhost:3001/api/v1/vendors/validate-email/'+hash,
-                template: 'confirm-email'
+                anchor: VENDOR_VALIDATE_EMAIL_URL + '?h=' + hash,
+                template: 'vendor-confirm-email'
             })
         }
-
         return response;
     }
 
@@ -144,11 +146,25 @@ console.log("el response para crear", response)
         };
     }
 
-    async getAllVendors(limit: number, page: number): Promise<Vendor[]> {
-        return (limit && page) ? this.repository.find({
+    async getAllVendors(limit: number, page: number): Promise<PaginatedResponse<Vendor>> {
+        const [data, total] = (limit && page) ? await this.repository.findAndCount({
             take: limit,
-            skip: page
-        }) : this.repository.find();
+            skip: (page - 1) * limit,
+            order: {
+                createdAt: 'DESC'
+            }
+        }) : await this.repository.findAndCount();
+
+        return {
+            data,
+            meta: {
+                total,
+                page,
+                limit,
+                lastPage: Math.ceil(total / limit)
+            }
+        };
+
     }
 
     async updateVendor(id: string, vendorData: VendorUpdateRequest): Promise<Vendor | null> {

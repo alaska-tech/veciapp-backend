@@ -17,6 +17,9 @@ export class Parameter {
   @Column({ type: 'varchar' })
   name!: string; // Nombre en base de datos
 
+  @Column({ type: 'varchar', nullable: true })
+  data!: string; // Data adicional
+
   @Column({ type: 'varchar' })
   description!: string; // Descripción del parámetro
 

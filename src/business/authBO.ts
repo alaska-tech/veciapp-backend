@@ -70,14 +70,15 @@ export class AuthBO {
         if (!isPasswordValid) throw new Error('Usuario o contraseña incorrectos');
 
         // Generar token JWT
-        const token = this.generateToken(user)
+        const token =  await this.generateToken(user)
 
         // Actualizar refresh token
-        const refreshToken = this.generateRefreshToken(user)
-        await this.accountRepository.update(user.id, { refreshToken, lastLoginDate: new Date() })
+        const refreshToken = await this.generateRefreshToken(user)
+        await this.accountRepository.update(user.id, { refreshToken: refreshToken, lastLoginDate: new Date() })
 
         // Excluir password del objeto usuario
         const { password, ...userWithoutPassword } = user
+        userWithoutPassword.refreshToken = refreshToken
 
         return {
             currentUser: userWithoutPassword,

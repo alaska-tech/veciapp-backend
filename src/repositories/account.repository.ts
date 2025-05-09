@@ -18,7 +18,7 @@ export class AccountRepository {
     }
 
     async findByResetToken(token: string): Promise<Account | null> {
-        return this.repository.findOneBy({ passwordResetToken: token });
+        return this.repository.findOneBy({ refreshToken: token });
     }
 
     async create(userData: Partial<Account>): Promise<Account> {

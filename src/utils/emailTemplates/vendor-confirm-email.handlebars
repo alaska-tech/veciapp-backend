@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificación de correo - VeciApp</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 80px;
+        }
+
+        .line {
+            height: 4px;
+            background-color: #fcd703;
+            margin: 20px 0;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        p span {
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 30px auto;
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #27ae60;
+        }
+
+        .footer-line {
+            height: 4px;
+            background-color: #fcd703;
+            margin: 40px 0 20px;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #666666;
+            line-height: 1.5;
+        }
+
+        .footer strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <img src="https://images2.imgbox.com/f2/c7/4gNo6ZMq_o.png" alt="VeciApp Logo">
+    </div>
+
+    <div class="line"></div>
+
+    <h1>{{title}}</h1>
+    <br/>
+
+    <p style="text-align: left; font-size: 20px">Hola <span>{{fullname}}</span>,</p>
+    <p style="text-align: left; font-size: 20px">¡Ya casi terminas de crear tu cuenta en VeciApp!</p>
+    <br/>
+
+    <a href={{anchor}} class="btn">Verificar correo electronico</a>
+
+    <p style="font-style: italic;">Al hacer clic, aceptas los términos y condiciones de VeciApp.</p>
+    <br/>
+    <p style="text-align: left">Este enlace es personal y válido solo una vez.<br>
+        Si no hiciste este registro, puedes ignorar este mensaje.</p>
+
+    <br/>
+
+    <div class="footer-line"></div>
+
+    <div class="footer">
+        <strong>VeciApp</strong>
+        <strong>Carrera 45 #26-15, Santa Marta, Magdalena, Colombia</strong><br>
+        © 2025 VeciApp. Todos los derechos reservados.<br>
+        Este correo fue enviado automáticamente, por favor no respondas a este mensaje.
+    </div>
+</div>
+</body>
+</html>
