@@ -103,11 +103,7 @@ export class AuthBO {
             // Verificar que el refresh token sea válido
             //const decoded = jwt.verify(token, this.refreshTokenSecret);
 
-console.log(token)
-
             const user = await this.accountRepository.findByResetToken(token);
-
-console.log("user que trae", user)
 
             if (!user) {
                 throw new Error("Refresh token inválido");

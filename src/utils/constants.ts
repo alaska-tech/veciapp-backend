@@ -18,4 +18,5 @@ export const {
     EMAIL_USER,
     EMAIL_PASS,
     VENDOR_VALIDATE_EMAIL_URL,
+    CUSTOMER_VALIDATE_EMAIL_URL,
 } = process.env
