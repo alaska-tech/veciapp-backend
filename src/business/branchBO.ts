@@ -218,15 +218,14 @@ export class BranchBO {
         try {
             // Ejecutar la consulta
             const [results, total] = await query.getManyAndCount();
-            console.log(query.getRawAndEntities())
+            const {raw, entities} = await query.getRawAndEntities();
 
             // Mapear los resultados para incluir la distancia
             const data = results.map((entity, index) => {
-console.log(query.expressionMap.selects)
-                const raw = query.expressionMap.selects.find((select) => select.selection === 'distance');
+
                 return {
                     ...entity,
-                    distance: parseFloat(raw ? raw.selection : '0'), // Distancia en metros
+                    distance: parseFloat(raw ? raw[index].distance : '0'), // Distancia en metros
                 };
             });
 
