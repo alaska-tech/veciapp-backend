@@ -28,7 +28,7 @@ export class Customer {
     @Column({ type: 'varchar', length: 255 })
     fullName!: string;
 
-    @Column({ type: 'varchar', length: 100, unique: true })
+    @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
     identification!: string;
 
     @Column({ type: 'varchar', length: 150, unique: true })
@@ -37,7 +37,7 @@ export class Customer {
     @Column({ default: false })
     isEmailVerified!: boolean;
 
-    @Column({ type: 'varchar', length: 20 })
+    @Column({ type: 'varchar', length: 20,  nullable: true })
     cellphone!: string;
 
     @Column({ type: 'varchar', length: 100 })
@@ -46,7 +46,7 @@ export class Customer {
     @Column({ type: 'varchar', length: 100 })
     city!: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     address!: string;
 
     @Column({ type: 'int', nullable: true })

@@ -5,6 +5,7 @@ import {CustomerState, Gender} from "../models/customer.entity";
 
 export interface Locations {
     alias: string;
+    address: string;
     coordinates: number[];
 }
 
