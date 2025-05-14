@@ -1,9 +1,10 @@
 import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {ProductServiceState} from '../types/productservice';
 
-export enum ProductServiceState {
-  AVAILABLE = 'available',
-  OUT_OF_STOCK = 'out_of_stock',
-  DISCONTINUED = 'discontinued',
+export enum ProductServiceStateHistory {
+  CREATED = 'created',
+  VERIFIED = 'verified',
+  SUSPENDED = 'suspended',
 }
 
 @Entity('product_services')
@@ -17,7 +18,7 @@ export class ProductService {
   @Column({ type: 'uuid' })
   branchId!: string;
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'text' })
   categoryId!: string;
 
   @Column({ type: 'jsonb', nullable: true })
@@ -94,4 +95,14 @@ export class ProductService {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @Column({ type: 'text' })
+  createdBy!: string;
+
+  @Column({ type: 'text', nullable: true })
+  updatedBy!: string;
+
+  @Column({ type: 'jsonb', default: [] })
+  stateHistory!: Array<{ state: ProductServiceStateHistory; changedAt: Date, reason: string }>;
+
 }
