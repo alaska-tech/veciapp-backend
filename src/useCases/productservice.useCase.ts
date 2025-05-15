@@ -1,29 +1,27 @@
-import { Response } from 'express';
-import { ProductServiceBO } from '../business/productserviceBO';
+import {Response} from 'express';
+import {ProductServiceBO} from '../business/productserviceBO';
 import {
-  CreateProductServiceRequest,
   CreateProductServiceRequestExtended,
-  UpdateProductServiceRequestExtended,
-  GetProductServiceByIdRequest,
-  DeleteProductServiceRequest,
-  UpdateInventoryRequest,
-  ToggleFeatureRequest,
-  UpdateProductStateRequest,
-  GetAllProductServicesRequest,
-  SearchProductsRequest,
-  ProductServiceData,
   CreateProductServiceResponse,
-  UpdateProductServiceResponse,
+  DeleteProductServiceRequest,
   DeleteProductServiceResponse,
+  GetAllProductServicesRequest,
+  GetProductServiceByIdRequest,
   InventoryUpdateResponse,
-  StateUpdateResponse,
-  ToggleFeatureResponse,
   PaginatedProductServiceResponse,
+  ProductServiceData,
   ProductServiceDetailResponse,
-  ProductServiceState
+  SearchProductsRequest,
+  StateUpdateResponse,
+  ToggleFeatureRequest,
+  ToggleFeatureResponse, UpdateInventoryBody,
+  UpdateInventoryRequest,
+  UpdateProductServiceRequestExtended,
+  UpdateProductServiceResponse,
+  UpdateProductStateRequest
 } from '../types/productservice';
-import { ApiResponse } from '../types/serverResponse';
-import { responseOk, responseError } from '../utils/standardResponseServer';
+import {ApiResponse} from '../types/serverResponse';
+import {responseError, responseOk} from '../utils/standardResponseServer';
 
 export class ProductServiceUseCases {
   private productServiceBO: ProductServiceBO = new ProductServiceBO();
@@ -33,7 +31,14 @@ export class ProductServiceUseCases {
     res: Response<ApiResponse<CreateProductServiceResponse>>
   ): Promise<void> => {
     try {
-      const product = await this.productServiceBO.createProductService(req.body);
+      const userInSession = req.user;
+      const createdBy = `${userInSession?.role}-${userInSession?.foreignPersonId}-${userInSession?.email}`;
+      const body = {
+        ...req.body,
+        createdBy
+      }
+
+      const product = await this.productServiceBO.createProductService(body);
 
       res.status(201).json(responseOk({
         id: product.id,
@@ -186,7 +191,15 @@ export class ProductServiceUseCases {
     try {
       // Obtener el producto antes de actualizarlo para tener referencia del estado inicial
       const originalProduct = await this.productServiceBO.getProductServiceById(req.params.id);
-      const product = await this.productServiceBO.updateProductService(req.params.id, req.body);
+
+      const userInSession = req.user;
+      const updatedBy = `${userInSession?.role}-${userInSession?.foreignPersonId}-${userInSession?.email}`;
+      const body = {
+        ...req.body,
+        updatedBy
+      }
+
+      const product = await this.productServiceBO.updateProductService(req.params.id, body);
 
       // Mapear el producto a ProductServiceData para respetar la interfaz
       const mappedProduct: ProductServiceData = {
@@ -255,12 +268,22 @@ export class ProductServiceUseCases {
     res: Response<ApiResponse<InventoryUpdateResponse>>
   ): Promise<void> => {
     try {
-      const { action, quantity } = req.body;
+      const userInSession = req.user;
+      const updatedBy: string = `${userInSession?.role}-${userInSession?.foreignPersonId}-${userInSession?.email}`;
+      const body = {
+        ...req.body,
+        updatedBy
+      }
 
       const originalProduct = await this.productServiceBO.getProductServiceById(req.params.id);
+
+      if (!originalProduct) {
+        res.status(404).json(responseError({ message: 'Producto/Servicio no encontrado' }));
+        return;
+      }
       const previousInventory = originalProduct.inventory;
 
-      const product = await this.productServiceBO.updateInventory(req.params.id, action, quantity);
+      const product = await this.productServiceBO.updateInventory(req.params.id, body as UpdateInventoryBody);
 
       res.status(200).json(responseOk({
         id: product.id,
@@ -297,12 +320,21 @@ export class ProductServiceUseCases {
     res: Response<ApiResponse<StateUpdateResponse>>
   ): Promise<void> => {
     try {
+      const userInSession = req.user;
+      const updatedBy: string = `${userInSession?.role}-${userInSession?.foreignPersonId}-${userInSession?.email}`;
+
       const { state } = req.body;
 
       const originalProduct = await this.productServiceBO.getProductServiceById(req.params.id);
+
+      if (!originalProduct) {
+        res.status(404).json(responseError({ message: 'Producto/Servicio no encontrado' }));
+        return;
+      }
+
       const previousState = originalProduct.state;
 
-      const product = await this.productServiceBO.updateProductState(req.params.id, state);
+      const product = await this.productServiceBO.updateProductState(req.params.id, state, updatedBy);
 
       res.status(200).json(responseOk({
         id: product.id,
