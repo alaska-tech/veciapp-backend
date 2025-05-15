@@ -7,7 +7,7 @@ import {
   ProductServiceState,
   ProductServiceStateHistory,
   SearchProductsRequest,
-  StateHistoryEntry,
+  StateHistoryEntry, UpdateInventoryBody, UpdateInventoryRequest,
   UpdateProductServiceRequest
 } from '../types/productservice';
 import {PaginatedResponse} from "../types/serverResponse";
@@ -202,8 +202,10 @@ export class ProductServiceBO {
   }
 
   // Actualizar inventario.
-  async updateInventory(id: string, action: ProductServiceInventoryUpdateType, quantity: number): Promise<ProductService> {
+  async updateInventory(id: string, body: UpdateInventoryBody ): Promise<ProductService> {
     const productService = await this.getProductServiceById(id);
+    const action = body.action;
+    const quantity = body.quantity;
 
     if (!productService) {
       throw new Error('Producto/Servicio no encontrado');
@@ -268,7 +270,7 @@ export class ProductServiceBO {
   }
 
   // Actualizar el estado del producto/servicio.
-  async updateProductState(id: string, newState: ProductServiceState): Promise<ProductService> {
+  async updateProductState(id: string, newState: ProductServiceState, updateBy?: string): Promise<ProductService> {
     const productService = await this.getProductServiceById(id);
     if (!productService) {
       throw new Error('Producto/Servicio no encontrado');
@@ -307,7 +309,7 @@ export class ProductServiceBO {
     }
   }> {
 
-    const { search, limit, page, vendorId, branchId, categoryId, type, state } = req.query;
+    const { search, limit, page, vendorId, branchId, categoryId, type, state, tags } = req.query;
 
     if (!search) {
       throw new Error('Término de búsqueda es requerido');
@@ -319,6 +321,7 @@ export class ProductServiceBO {
       categoryId,
       type,
       state,
+      tags,
       search
     };
 

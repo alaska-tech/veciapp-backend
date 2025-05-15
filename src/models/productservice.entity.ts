@@ -1,5 +1,14 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 import {ProductServiceState} from '../types/productservice';
+import {Point} from "geojson";
 
 export enum ProductServiceStateHistory {
   CREATED = 'created',
@@ -36,6 +45,7 @@ export class ProductService {
   @Column({ type: 'varchar', length: 255 })
   name!: string;
 
+  @Index()
   @Column({ type: 'text' })
   description!: string;
 
@@ -60,6 +70,7 @@ export class ProductService {
   @Column({ type: 'varchar', length: 255 })
   mainImage!: string;
 
+  @Index()
   @Column({ type: 'text', array: true, default: [] })
   tags!: string[];
 
@@ -104,5 +115,8 @@ export class ProductService {
 
   @Column({ type: 'jsonb', default: [] })
   stateHistory!: Array<{ state: ProductServiceStateHistory; changedAt: Date, reason: string }>;
+
+  @DeleteDateColumn({ name: 'deleteDate', type: 'timestamp', nullable: true })
+  deleteDate?: Date;
 
 }

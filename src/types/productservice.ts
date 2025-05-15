@@ -73,13 +73,15 @@ export interface DeleteProductServiceRequest extends Request {
   params: { id: string }
 }
 
-export interface UpdateInventoryRequest extends Request {
-  params: { id: string };
-  body: {
+export interface UpdateInventoryBody extends Request {
     action: ProductServiceInventoryUpdateType;
     quantity: number;
     updatedBy?: string;
-  }
+}
+
+export interface UpdateInventoryRequest extends Request {
+  params: { id: string };
+  body: UpdateInventoryBody
 }
 
 export interface ToggleFeatureRequest extends Request {
@@ -122,6 +124,7 @@ export interface SearchProductsRequest extends Request {
     branchId?: string;
     categoryId?: string;
     type?: string;
+    tags?: string[];
     state?: ProductServiceState;
   }
 }
