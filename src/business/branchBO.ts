@@ -7,16 +7,20 @@ import {BranchCreateRequest, BranchManageStatusRequest, BranchStats, BranchUpdat
 
 import {PaginatedResponse} from "../types/serverResponse";
 import {Vendor} from "../models/vendor.entity";
+import { CloudinaryService } from '../services/uploadImages';
+
 
 export class BranchBO {
     private vendorRepository: Repository<Vendor>
     private branchRepository: Repository<Branch>;
     private productServiceRepository: Repository<ProductService>;
+    private cloudinaryService: CloudinaryService;
 
     constructor() {
         this.vendorRepository = AppDataSource.getRepository(Vendor);
         this.branchRepository = AppDataSource.getRepository(Branch);
         this.productServiceRepository = AppDataSource.getRepository(ProductService);
+        this.cloudinaryService = new CloudinaryService();
     }
 
     // Métodos de negocio
@@ -242,6 +246,71 @@ export class BranchBO {
         } catch (error) {
             console.error('Error fetching nearby branches:', error);
             throw new Error('Failed to fetch nearby branches');
+        }
+    }
+
+    async updateBranchLogo(id: string, logoUrl: string): Promise<Branch | null> {
+        const branch: Branch | null = await this.branchRepository.findOneBy({ id });
+        if (!branch) throw new Error('La tienda no existe');
+
+        // Si ya había un logo, eliminarlo de Cloudinary
+        if (branch.logo) {
+            try {
+                const publicId = this.cloudinaryService.extractPublicId(branch.logo);
+                if (publicId) {
+                    await this.cloudinaryService.deleteImage(publicId);
+                }
+            } catch (error) {
+                console.error('Error al eliminar imagen anterior:', error);
+                // Continuamos con la actualización incluso si falla la eliminación
+            }
+        }
+
+        // Actualizar el logo
+        branch.logo = logoUrl;
+        return this.branchRepository.save(branch);
+    }
+
+    async addBranchImages(id: string, imageUrls: string[]): Promise<Branch | null> {
+        const branch: Branch | null = await this.branchRepository.findOneBy({ id });
+        if (!branch) throw new Error('La tienda no existe');
+
+        // Si no hay imágenes previas, inicializar el array
+        if (!branch.images) {
+            branch.images = [];
+        }
+
+        // Verificar si no excede el límite de imágenes (por ejemplo, 10)
+        if (branch.images.length + imageUrls.length > 10) {
+            throw new Error('Excede el límite de 10 imágenes por tienda');
+        }
+
+        // Agregar las nuevas imágenes
+        branch.images = [...branch.images, ...imageUrls];
+        return this.branchRepository.save(branch);
+    }
+
+    async removeBranchImage(id: string, imageUrl: string): Promise<Branch | null> {
+        const branch: Branch | null = await this.branchRepository.findOneBy({ id });
+        if (!branch) throw new Error('La tienda no existe');
+
+        // Verificar si la imagen existe en el array
+        if (!branch.images || !branch.images.includes(imageUrl)) {
+            throw new Error('La imagen no existe en esta tienda');
+        }
+
+        try {
+            // Eliminar la imagen de Cloudinary
+            const publicId = this.cloudinaryService.extractPublicId(imageUrl);
+            if (publicId) {
+                await this.cloudinaryService.deleteImage(publicId);
+            }
+
+            // Eliminar la imagen del array
+            branch.images = branch.images.filter(img => img !== imageUrl);
+            return this.branchRepository.save(branch);
+        } catch (error) {
+            throw new Error(`Error al eliminar la imagen: ${(error as Error).message}`);
         }
     }
 }

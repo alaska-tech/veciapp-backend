@@ -11,7 +11,10 @@ import {
     BranchStatsRequestExtended,
     BranchCreateResponse,
     BranchStats,
-    BranchManageStatusRequestExtended, NearbyBranchPaginationRequestExtended
+    BranchManageStatusRequestExtended,
+    NearbyBranchPaginationRequestExtended,
+    FileUploadRequestExtended,
+    RemoveImageRequestExtended
 } from '../types/branch';
 import {ApiResponse} from '../types/serverResponse';
 import {responseError, responseOk} from "../utils/standardResponseServer";
@@ -139,6 +142,63 @@ export class BranchUseCases {
             }
         } catch (error: any) {
             res.status(500).json(responseError({ message: error.message }));
+        }
+    }
+
+    uploadLogo = async (req: FileUploadRequestExtended, res: Response<ApiResponse<BranchCreateResponse>>): Promise<void> => {
+        try {
+            if (!req.body.logo) {
+                res.status(400).json(responseError({ message: 'No se ha proporcionado una imagen para el logo' }));
+                return;
+            }
+
+            const branch = await this.branchBO.updateBranchLogo(req.params.id, req.body.logo);
+            if (branch) {
+                res.status(200).json(responseOk({ id: branch.id, message: 'El logo de la tienda ha sido actualizado con éxito!' }));
+            } else {
+                res.status(404).json(responseError({ message: 'Tienda no encontrada' }));
+            }
+        } catch (error: any) {
+            res.status(400).json(responseError({ message: error.message }));
+        }
+    }
+
+    uploadImages = async (req: FileUploadRequestExtended, res: Response<ApiResponse<BranchCreateResponse>>): Promise<void> => {
+        try {
+            if (!req.body.images || !Array.isArray(req.body.images) || req.body.images.length === 0) {
+                res.status(400).json(responseError({ message: 'No se han proporcionado imágenes para cargar' }));
+                return;
+            }
+
+            const branch = await this.branchBO.addBranchImages(req.params.id, req.body.images);
+            if (branch) {
+                res.status(200).json(responseOk({
+                    id: branch.id,
+                    message: `Se han agregado ${req.body.images.length} imágenes a la tienda con éxito!`
+                }));
+            } else {
+                res.status(404).json(responseError({ message: 'Tienda no encontrada' }));
+            }
+        } catch (error: any) {
+            res.status(400).json(responseError({ message: error.message }));
+        }
+    }
+
+    removeImage = async (req: RemoveImageRequestExtended, res: Response<ApiResponse<BranchCreateResponse>>): Promise<void> => {
+        try {
+            if (!req.body.imageUrl) {
+                res.status(400).json(responseError({ message: 'No se ha proporcionado la URL de la imagen a eliminar' }));
+                return;
+            }
+
+            const branch = await this.branchBO.removeBranchImage(req.params.id, req.body.imageUrl);
+            if (branch) {
+                res.status(200).json(responseOk({ id: branch.id, message: 'La imagen ha sido eliminada con éxito!' }));
+            } else {
+                res.status(404).json(responseError({ message: 'Tienda no encontrada o imagen no encontrada' }));
+            }
+        } catch (error: any) {
+            res.status(400).json(responseError({ message: error.message }));
         }
     }
 }

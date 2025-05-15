@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import multer from 'multer';
 import {Branch, BranchState} from "../models/branch.entity";
 import { Point } from 'typeorm';
 
@@ -143,4 +144,29 @@ export interface PaginatedNearbyResponse {
         limit: number | string;
         lastPage: number | string;
     };
+}
+
+export interface FileUpload {
+    logo?: string;
+    images?: string[];
+}
+
+export interface RemoveImageRequest {
+    imageUrl: string;
+}
+
+export interface FileUploadRequestExtended extends Request {
+    params: {
+        id: string;
+    };
+    body: FileUpload;
+    file?: Express.Multer.File;
+    files?: Express.Multer.File[] | { [fieldname: string]: Express.Multer.File[] };
+}
+
+export interface RemoveImageRequestExtended extends Request {
+    params: {
+        id: string;
+    };
+    body: RemoveImageRequest;
 }
