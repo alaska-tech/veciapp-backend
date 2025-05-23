@@ -1,20 +1,18 @@
-import { Request, Response } from "express";
-import { ShoppingCartBO } from "../business/ShoppingcartBO";
+import {Request, Response} from "express";
+import {ShoppingcartBO} from "../business/shoppingcartBO";
 import {
+  ClearCustomerCartRequestExtended,
+  ClearCustomerCartResponse,
   CreateShoppingCartRequestExtended,
   CreateShoppingCartResponse,
   GetAllShoppingCartsRequestExtended,
-  UpdateShoppingCartRequestExtended,
-  ClearCustomerCartRequestExtended,
-  ClearCustomerCartResponse,
-  GetShoppingCartByIdRequestExtended,
   GetShoppingCartByCustomerIdRequestExtended,
-  ShoppingCartResponse,
+  PaginatedShoppingCartResponse,
   ShoppingCartsResponse,
-  PaginatedShoppingCartResponse
+  UpdateShoppingCartRequestExtended
 } from "../types/shoppingcart";
 import {ApiResponse} from '../types/serverResponse';
-import { responseError, responseOk } from "../utils/standardResponseServer";
+import {responseError, responseOk} from "../utils/standardResponseServer";
 
 // Función de mapeo
 function mapShoppingCartToData(cart: import('../models/shoppingcart.entity').ShoppingCart): import('../types/shoppingcart').ShoppingCartData {
@@ -32,7 +30,7 @@ function mapShoppingCartToData(cart: import('../models/shoppingcart.entity').Sho
 }
 
 export class ShoppingCartUseCases {
-  private shoppingCartBO: ShoppingCartBO = new ShoppingCartBO();
+  private shoppingCartBO: ShoppingcartBO = new ShoppingcartBO();
 
   createShoppingCart = async (
     req: CreateShoppingCartRequestExtended,
@@ -67,7 +65,7 @@ export class ShoppingCartUseCases {
       };
       res.status(200).json(responseOk(data));
     } catch (error: any) {
-      res.status(400).json(responseError({ message: error.message }));
+      res.status(400).json(responseError<any>({ message: error.message }));
     }
   }
 
@@ -87,7 +85,7 @@ export class ShoppingCartUseCases {
       };
       res.status(200).json(responseOk(data));
     } catch (error: any) {
-      res.status(400).json(responseError({ message: error.message }));
+      res.status(400).json(responseError<any>({ message: error.message }));
     }
   }
 
@@ -153,116 +151,3 @@ export class ShoppingCartUseCases {
     }
   }
 }
-
-// import { Request, Response } from "express";
-// import { ShoppingCartBO } from "../business/ShoppingcartBO";
-// import {
-//   ApiResponse,
-//   CreateShoppingCartRequestExtended,
-//   CreateShoppingCartResponse,
-//   GetAllShoppingCartsRequestExtended,
-//   UpdateShoppingCartRequestExtended,
-//   ClearCustomerCartRequestExtended,
-//   ClearCustomerCartResponse
-// } from "../types/shoppingcart";
-// import { responseError, responseOk } from "../utils/standardResponseServer";
-//
-// export class ShoppingCartUseCases {
-//   private shoppingCartBO: ShoppingCartBO = new ShoppingCartBO();
-//
-//   createShoppingCart = async (req: CreateShoppingCartRequestExtended, res: Response<ApiResponse<CreateShoppingCartResponse>>): Promise<void> => {
-//     try {
-//       const shoppingCart = await this.shoppingCartBO.createShoppingCart(req);
-//       res.status(201).json(responseOk({
-//         id: shoppingCart.id,
-//         message: "Producto añadido al carrito satisfactoriamente!"
-//       }));
-//     } catch (error: any) {
-//       res.status(400).json(responseError({ message: error.message }));
-//     }
-//   }
-//
-//   getShoppingCartById = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//       const shoppingCart = await this.shoppingCartBO.getShoppingCartById(req.params.id);
-//       if (shoppingCart) {
-//         res.status(200).json(responseOk(shoppingCart));
-//       } else {
-//         res.status(404).json(responseError({ message: "Item del carrito no encontrado" }));
-//       }
-//     } catch (error: any) {
-//       res.status(400).json(responseError({ message: error.message }));
-//     }
-//   }
-//
-//   getShoppingCartByCustomerId = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//       const shoppingCart = await this.shoppingCartBO.getShoppingCartByCustomerId(req.params.customerId);
-//       res.status(200).json(responseOk(shoppingCart));
-//     } catch (error: any) {
-//       res.status(400).json(responseError({ message: error.message }));
-//     }
-//   }
-//
-//   getAllShoppingCarts = async (req: GetAllShoppingCartsRequestExtended, res: Response<ApiResponse<any>>): Promise<void> => {
-//     try {
-//       const { limit, page } = req.query;
-//       const shoppingCarts = await this.shoppingCartBO.getAllShoppingCarts(
-//         Number(limit),
-//         Number(page)
-//       );
-//       res.status(200).json(responseOk(shoppingCarts));
-//     } catch (error: any) {
-//       res.status(400).json(responseError({ message: error.message }));
-//     }
-//   }
-//
-//   updateShoppingCart = async (req: UpdateShoppingCartRequestExtended, res: Response): Promise<void> => {
-//     try {
-//       const shoppingCart = await this.shoppingCartBO.updateShoppingCart(
-//         req.params.id,
-//         req
-//       );
-//       if (shoppingCart) {
-//         res.status(200).json(responseOk({
-//           id: shoppingCart.id,
-//           message: "Item del carrito actualizado satisfactoriamente"
-//         }));
-//       } else {
-//         res.status(404).json(responseError({ message: "Item del carrito no encontrado" }));
-//       }
-//     } catch (error: any) {
-//       res.status(400).json(responseError({ message: error.message }));
-//     }
-//   }
-//
-//   deleteShoppingCart = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//       const success = await this.shoppingCartBO.deleteShoppingCart(req.params.id);
-//       if (success) {
-//         res.status(200).json(responseOk({
-//           message: "Item del carrito eliminado correctamente"
-//         }));
-//       } else {
-//         res.status(404).json(responseError({ message: "Item del carrito no encontrado" }));
-//       }
-//     } catch (error: any) {
-//       res.status(500).json(responseError({ message: error.message }));
-//     }
-//   }
-//
-//   clearCustomerCart = async (req: ClearCustomerCartRequestExtended, res: Response<ApiResponse<ClearCustomerCartResponse>>): Promise<void> => {
-//     try {
-//       const success = await this.shoppingCartBO.clearCustomerCart(req.params.customerId);
-//       if (success) {
-//         res.status(200).json(responseOk({
-//           message: "Carrito del cliente vaciado correctamente"
-//         }));
-//       } else {
-//         res.status(404).json(responseError({ message: "No se encontraron items en el carrito del cliente" }));
-//       }
-//     } catch (error: any) {
-//       res.status(500).json(responseError({ message: error.message }));
-//     }
-//   }
-// }

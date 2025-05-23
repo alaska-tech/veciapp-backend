@@ -3,10 +3,6 @@ import { ShoppingCart } from '../models/shoppingcart.entity';
 
 // Interfaces para las peticiones
 
-export interface GetShoppingCartByIdRequestExtended extends Request {
-  params: { id: string }
-}
-
 export interface GetShoppingCartByCustomerIdRequestExtended extends Request {
   params: { customerId: string }
 }
@@ -42,10 +38,6 @@ export interface UpdateShoppingCartRequestExtended extends Request {
   body: UpdateShoppingCartRequest;
 }
 
-export interface DeleteShoppingCartRequestExtended extends Request {
-  params: { id: string }
-}
-
 export interface ClearCustomerCartRequestExtended extends Request {
   params: { customerId: string }
 }
@@ -54,15 +46,6 @@ export interface ClearCustomerCartRequestExtended extends Request {
 
 export interface CreateShoppingCartResponse {
   id?: string;
-  message: string;
-}
-
-export interface UpdateShoppingCartResponse {
-  id?: string;
-  message: string;
-}
-
-export interface DeleteShoppingCartResponse {
   message: string;
 }
 
@@ -80,10 +63,6 @@ export interface ShoppingCartData {
   totalPrice: string;
   addedAt: Date;
   updatedAt: Date;
-}
-
-export interface ShoppingCartResponse {
-  shoppingCart: ShoppingCartData;
 }
 
 export interface ShoppingCartsResponse {

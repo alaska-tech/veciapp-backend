@@ -3,11 +3,12 @@ import {DeepPartial, Repository} from 'typeorm';
 import {AppDataSource} from '../config/database';
 import {
   CreateProductServiceRequest,
-  ProductServiceInventoryUpdateType,
+  ProductServiceData,
   ProductServiceState,
   ProductServiceStateHistory,
   SearchProductsRequest,
-  StateHistoryEntry, UpdateInventoryBody, UpdateInventoryRequest,
+  StateHistoryEntry,
+  UpdateInventoryBody,
   UpdateProductServiceRequest
 } from '../types/productservice';
 import {PaginatedResponse} from "../types/serverResponse";
@@ -52,12 +53,45 @@ export class ProductServiceBO {
   }
 
   // Obtener un producto/servicio por id.
-  async getProductServiceById(id: string): Promise<ProductService | null> {
+  async getProductServiceById(id: string): Promise<ProductServiceData | null> {
     const productService = await this.repository.findOneBy({ id });
     if (!productService) {
       throw new Error('Producto/Servicio no encontrado');
     }
-    return productService;
+
+      const mappedProduct: ProductServiceData = {
+        id: productService.id,
+        vendorId: productService.vendorId,
+        branchId: productService.branchId,
+        categoryId: productService.categoryId,
+        type: productService.type === 'product' ? 'product' : 'service',
+        name: productService.name,
+        description: productService.description || '',
+        shortDescription: productService.shortDescription || '',
+        price: productService.price,
+        discount: productService.discount || '0',
+        finalPrice: productService.finalPrice,
+        currency: productService.currency || 'USD',
+        mainImage: productService.mainImage || '',
+        images: productService.images || [],
+        tags: productService.tags || [],
+        state: productService.state,
+        inventory: productService.inventory,
+        presentation: productService.presentation,
+        ingredients: productService.ingredients || [],
+        allergens: productService.allergens || [],
+        isHighlighted: productService.isHighlighted || false,
+        isBestseller: productService.isBestseller || false,
+        isNew: productService.isNew || false,
+        serviceScheduling: productService.serviceScheduling,
+        createdBy: productService.createdBy || '',
+        updatedBy: productService.updatedBy,
+        createdAt: productService.createdAt,
+        updatedAt: productService.updatedAt,
+        stateHistory: productService.stateHistory
+      };
+
+        return mappedProduct;
   }
 
   // Obtener productos y servicios paginados y filtrados.
@@ -75,8 +109,19 @@ export class ProductServiceBO {
       isNew?: boolean;
       search?: string;
     }
-  ): Promise<PaginatedResponse<ProductService>> {
-    return await this.getAllProductServicesInternal(limit, page, filters);
+  ): Promise<PaginatedResponse<ProductServiceData>> {
+
+    const productServices = await this.getAllProductServicesInternal(limit, page, filters);
+
+    return {
+      data: productServices.data,
+      meta: {
+        total: productServices.meta.total,
+        page: productServices.meta.page,
+        limit: productServices.meta.limit,
+        lastPage: productServices.meta.lastPage
+      }
+    };
   }
 
   // Método interno para consultas flexibles.
@@ -94,7 +139,7 @@ export class ProductServiceBO {
       isNew?: boolean;
       search?: string;
     }
-  ): Promise<PaginatedResponse<ProductService>> {
+  ): Promise<PaginatedResponse<ProductServiceData>> {
     const queryBuilder = this.repository.createQueryBuilder('product_service');
 
     if (filters) {
@@ -133,8 +178,40 @@ export class ProductServiceBO {
     queryBuilder.take(limit).skip(page * limit).orderBy('product_service.createdAt', 'DESC');
     const [data, total] = await queryBuilder.getManyAndCount();
 
+    const mappedData = data.map((productService) => ({
+      id: productService.id,
+      vendorId: productService.vendorId,
+      branchId: productService.branchId,
+      categoryId: productService.categoryId,
+      type: productService.type === 'product' ? 'product' : 'service',
+      name: productService.name,
+      description: productService.description || '',
+      shortDescription: productService.shortDescription || '',
+      price: productService.price,
+      discount: productService.discount || '0',
+      finalPrice: productService.finalPrice,
+      currency: productService.currency || 'USD',
+      mainImage: productService.mainImage || '',
+      images: productService.images || [],
+      tags: productService.tags || [],
+      state: productService.state,
+      inventory: productService.inventory,
+      presentation: productService.presentation,
+      ingredients: productService.ingredients || [],
+      allergens: productService.allergens || [],
+      isHighlighted: productService.isHighlighted || false,
+      isBestseller: productService.isBestseller || false,
+      isNew: productService.isNew || false,
+      serviceScheduling: productService.serviceScheduling,
+      createdBy: productService.createdBy || '',
+      updatedBy: productService.updatedBy,
+      createdAt: productService.createdAt,
+      updatedAt: productService.updatedAt,
+      stateHistory: productService.stateHistory
+    } as ProductServiceData));
+
     return {
-      data,
+      data: mappedData,
       meta: {
         total,
         page,
@@ -300,7 +377,7 @@ export class ProductServiceBO {
   async searchProducts(
     req: SearchProductsRequest
   ): Promise<{
-    products: ProductService[],
+    products: ProductServiceData[],
     meta: {
       total: number;
       page: number;

@@ -7,6 +7,7 @@ import customers from './customers'
 import branches from './branches'
 import productservice from "./productservice";
 import shoppingcart from "./shoppingcart";
+import favorites from './favorites'
 /*import orders from './orders'
 import categories from './categories'*/
 import parameters from './parameters'
@@ -17,9 +18,9 @@ router.use('/customers', customers)
 router.use('/branches', branches)
 router.use('/productservice', productservice)
 router.use('/shoppingcart', shoppingcart)
+router.use('/favorites', favorites)
 /*router.use('/orders', orders)
 router.use('/categories', categories)*/
 router.use('/parameters', parameters)
 
 export default router
-

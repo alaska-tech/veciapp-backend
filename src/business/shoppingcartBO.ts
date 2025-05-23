@@ -8,7 +8,7 @@ import {
 } from "../types/shoppingcart";
 import { PaginatedResponse } from "../types/serverResponse";
 
-export class ShoppingCartBO {
+export class ShoppingcartBO {
   private repository: Repository<ShoppingCart>;
 
   constructor() {
