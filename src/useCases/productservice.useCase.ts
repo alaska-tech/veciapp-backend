@@ -9,12 +9,12 @@ import {
   GetProductServiceByIdRequest,
   InventoryUpdateResponse,
   PaginatedProductServiceResponse,
-  ProductServiceData,
   ProductServiceDetailResponse,
   SearchProductsRequest,
   StateUpdateResponse,
   ToggleFeatureRequest,
-  ToggleFeatureResponse, UpdateInventoryBody,
+  ToggleFeatureResponse,
+  UpdateInventoryBody,
   UpdateInventoryRequest,
   UpdateProductServiceRequestExtended,
   UpdateProductServiceResponse,
@@ -55,48 +55,14 @@ export class ProductServiceUseCases {
   ): Promise<void> => {
     try {
       const product = await this.productServiceBO.getProductServiceById(req.params.id);
-      if (product) {
-        // Mapear el producto a ProductServiceData para respetar la interfaz definida
-        const mappedProduct: ProductServiceData = {
-          id: product.id,
-          vendorId: product.vendorId,
-          branchId: product.branchId,
-          categoryId: product.categoryId,
-          type: product.type === 'product' ? 'product' : 'service',
-          name: product.name,
-          description: product.description || '',
-          shortDescription: product.shortDescription || '',
-          price: product.price,
-          discount: product.discount || '0',
-          finalPrice: product.finalPrice,
-          currency: product.currency || 'USD',
-          mainImage: product.mainImage || '',
-          images: product.images || [],
-          tags: product.tags || [],
-          state: product.state,
-          inventory: product.inventory,
-          presentation: product.presentation,
-          ingredients: product.ingredients || [],
-          allergens: product.allergens || [],
-          isHighlighted: product.isHighlighted || false,
-          isBestseller: product.isBestseller || false,
-          isNew: product.isNew || false,
-          serviceScheduling: product.serviceScheduling,
-          createdBy: product.createdBy || '',
-          updatedBy: product.updatedBy,
-          createdAt: product.createdAt,
-          updatedAt: product.updatedAt,
-          stateHistory: product.stateHistory
-        };
 
-        res.status(200).json(responseOk({
-          data: mappedProduct
-        }));
+      if (product) {
+        res.status(200).json(responseOk({ data: product}));
       } else {
-        res.status(404).json(responseError({ code: 'NOT_FOUND', message: 'Producto/Servicio no encontrado' }));
+        res.status(404).json(responseError<any>({ code: 'NOT_FOUND', message: 'Producto/Servicio no encontrado' }));
       }
     } catch (error: any) {
-      res.status(500).json(responseError({ message: error.message }));
+      res.status(500).json(responseError<any>({ message: error.message }));
     }
   };
 
@@ -136,51 +102,18 @@ export class ProductServiceUseCases {
       );
 
       if (paginated.data.length === 0) {
-        res.status(404).json(responseError({ message: 'No se encontraron productos/servicios' }));
+        res.status(404).json(responseError<any>({ message: 'No se encontraron productos/servicios' }));
         return;
       }
 
-      // Mapear los datos al tipo esperado según la interfaz
-      const mappedData: ProductServiceData[] = paginated.data.map(product => ({
-        id: product.id,
-        vendorId: product.vendorId,
-        branchId: product.branchId,
-        categoryId: product.categoryId,
-        type: product.type === 'product' ? 'product' : 'service',
-        name: product.name,
-        description: product.description || '',
-        shortDescription: product.shortDescription || '',
-        price: product.price,
-        discount: product.discount || '0',
-        finalPrice: product.finalPrice,
-        currency: product.currency || 'USD',
-        mainImage: product.mainImage || '',
-        images: product.images || [],
-        tags: product.tags || [],
-        state: product.state,
-        inventory: product.inventory,
-        presentation: product.presentation,
-        ingredients: product.ingredients || [],
-        allergens: product.allergens || [],
-        isHighlighted: product.isHighlighted || false,
-        isBestseller: product.isBestseller || false,
-        isNew: product.isNew || false,
-        serviceScheduling: product.serviceScheduling,
-        createdBy: product.createdBy || '',
-        updatedBy: product.updatedBy,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-        stateHistory: product.stateHistory
-      }));
-
       const response: PaginatedProductServiceResponse = {
-        data: mappedData,
+        data: paginated.data,
         meta: paginated.meta
       };
 
       res.status(200).json(responseOk(response));
     } catch (error: any) {
-      res.status(500).json(responseError({ message: error.message }));
+      res.status(500).json(responseError<any>({ message: error.message }));
     }
   };
 
@@ -189,9 +122,6 @@ export class ProductServiceUseCases {
     res: Response<ApiResponse<UpdateProductServiceResponse>>
   ): Promise<void> => {
     try {
-      // Obtener el producto antes de actualizarlo para tener referencia del estado inicial
-      const originalProduct = await this.productServiceBO.getProductServiceById(req.params.id);
-
       const userInSession = req.user;
       const updatedBy = `${userInSession?.role}-${userInSession?.foreignPersonId}-${userInSession?.email}`;
       const body = {
@@ -201,43 +131,9 @@ export class ProductServiceUseCases {
 
       const product = await this.productServiceBO.updateProductService(req.params.id, body);
 
-      // Mapear el producto a ProductServiceData para respetar la interfaz
-      const mappedProduct: ProductServiceData = {
-        id: product.id,
-        vendorId: product.vendorId,
-        branchId: product.branchId,
-        categoryId: product.categoryId,
-        type: product.type === 'product' ? 'product' : 'service',
-        name: product.name,
-        description: product.description || '',
-        shortDescription: product.shortDescription || '',
-        price: product.price,
-        discount: product.discount || '0',
-        finalPrice: product.finalPrice,
-        currency: product.currency || 'USD',
-        mainImage: product.mainImage || '',
-        images: product.images || [],
-        tags: product.tags || [],
-        state: product.state,
-        inventory: product.inventory,
-        presentation: product.presentation,
-        ingredients: product.ingredients || [],
-        allergens: product.allergens || [],
-        isHighlighted: product.isHighlighted || false,
-        isBestseller: product.isBestseller || false,
-        isNew: product.isNew || false,
-        serviceScheduling: product.serviceScheduling,
-        createdBy: product.createdBy || '',
-        updatedBy: product.updatedBy,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-        stateHistory: product.stateHistory
-      };
-
       res.status(200).json(responseOk({
         id: product.id,
-        message: 'Producto/Servicio actualizado con éxito',
-        data: mappedProduct
+        message: 'Producto/Servicio actualizado con éxito'
       }));
     } catch (error: any) {
       res.status(400).json(responseError({ message: error.message }));
@@ -311,7 +207,7 @@ export class ProductServiceUseCases {
         message: `Propiedad ${feature} actualizada correctamente`
       }));
     } catch (error: any) {
-      res.status(400).json(responseError({ message: error.message }));
+      res.status(400).json(responseError<any>({ message: error.message }));
     }
   };
 
@@ -354,46 +250,14 @@ export class ProductServiceUseCases {
     try {
       const result = await this.productServiceBO.searchProducts(req);
 
-      const mappedData: ProductServiceData[] = result.products.map(product => ({
-        id: product.id,
-        vendorId: product.vendorId,
-        branchId: product.branchId,
-        categoryId: product.categoryId,
-        type: product.type === 'product' ? 'product' : 'service',
-        name: product.name,
-        description: product.description || '',
-        shortDescription: product.shortDescription || '',
-        price: product.price,
-        discount: product.discount || '0',
-        finalPrice: product.finalPrice,
-        currency: product.currency || 'USD',
-        mainImage: product.mainImage || '',
-        images: product.images || [],
-        tags: product.tags || [],
-        state: product.state,
-        inventory: product.inventory,
-        presentation: product.presentation,
-        ingredients: product.ingredients || [],
-        allergens: product.allergens || [],
-        isHighlighted: product.isHighlighted || false,
-        isBestseller: product.isBestseller || false,
-        isNew: product.isNew || false,
-        serviceScheduling: product.serviceScheduling,
-        createdBy: product.createdBy || '',
-        updatedBy: product.updatedBy,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-        stateHistory: product.stateHistory
-      }));
-
       const response: PaginatedProductServiceResponse = {
-        data: mappedData,
+        data: result.products,
         meta: result.meta
       };
 
       res.status(200).json(responseOk(response));
     } catch (error: any) {
-      res.status(400).json(responseError({ message: error.message }));
+      res.status(400).json(responseError<any>({ message: error.message }));
     }
   };
 }
